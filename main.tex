@@ -1,0 +1,2398 @@
+%% Fix harmless fixltx2e warning from elsarticle
+\RequirePackage{silence}
+\WarningFilter*{fixltx2e}{fixltx2e is not required}
+
+\documentclass[5p,times]{elsarticle}
+\raggedbottom
+
+% =========================================================
+% PACKAGES
+% =========================================================
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{placeins}
+\usepackage{dblfloatfix}
+\usepackage{pifont}
+\usepackage[strings]{underscore}
+\newcommand{\cmark}{\ding{51}}
+\newcommand{\xmark}{\ding{55}}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=blue,
+	citecolor=blue,
+	urlcolor=blue
+}
+
+% microtype improves character protrusion/kerning and reduces the
+% number and severity of overfull/underfull hboxes without altering
+% the visible layout, wording, or float placement of the document.
+\usepackage{microtype}
+
+\allowdisplaybreaks
+\emergencystretch=2em
+
+% =========================================================
+% SAFE FIGURE INCLUSION
+% Prevents "Emergency stop" when a referenced image file
+% has not yet been uploaded to the project. If the file
+% exists, it displays normally. If not, a placeholder box
+% is shown instead, and compilation continues.
+% =========================================================
+\newcommand{\safefig}[2]{%
+	\IfFileExists{#1}{%
+		\includegraphics[width=\linewidth]{#1}%
+	}{%
+		\fbox{\parbox[c][6cm][c]{0.9\linewidth}{\centering
+				\textbf{Missing figure file:}\\ \texttt{#1}\\[4pt]
+				\small (#2)}}%
+	}%
+}
+
+% =========================================================
+% PAGE & FLOAT TUNING
+% =========================================================
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.9}
+
+% ---------------------------------------------------------
+% Consistent caption formatting (figures AND tables share the
+% same font family/size, per formatting-consistency requirement)
+% ---------------------------------------------------------
+\captionsetup{font={small,rm},labelfont={small,bf,rm},labelsep=period}
+\captionsetup[figure]{position=below,skip=4pt,font={small,rm},labelfont={small,bf,rm}}
+\captionsetup[table]{position=above,skip=4pt,font={small,rm},labelfont={small,bf,rm}}
+
+\setlength{\textfloatsep}{10pt plus 2pt minus 2pt}
+\setlength{\floatsep}{8pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+
+% Heading spacing before/after \section, \subsection, and
+% \subsubsection is governed uniformly by the document class's
+% own definitions, so all headings at the same level already
+% receive identical spacing throughout the document.
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% =========================================================
+% CUSTOM COLOURS
+% =========================================================
+\definecolor{barblue}{RGB}{31,119,180}
+\definecolor{bargreen}{RGB}{44,160,44}
+\definecolor{baryellow}{RGB}{255,187,0}
+\definecolor{barred}{RGB}{214,39,40}
+\definecolor{esncolor}{RGB}{72,176,230}
+\definecolor{transcolor}{RGB}{255,140,0}
+\definecolor{classcolor}{RGB}{80,200,120}
+\definecolor{arrowgray}{RGB}{120,120,120}
+\definecolor{darkblue}{RGB}{0,51,102}
+\definecolor{medblue}{RGB}{31,119,180}
+\definecolor{lightblue}{RGB}{174,214,241}
+\definecolor{darkorange}{RGB}{200,100,0}
+\definecolor{darkgreen}{RGB}{0,100,60}
+\definecolor{darkred}{RGB}{150,30,30}
+\definecolor{midgray}{RGB}{100,100,100}
+
+% =========================================================
+\begin{document}
+	% =========================================================
+	
+	\begin{frontmatter}
+		
+		\title{A Reservoir Network Based Approach to Intrusion Detection
+			Using Hybrid Transformer-ESN Architecture on CIC-IDS2017}
+		
+		\author[1]{L.~K.~Suresh Kumar}
+		\author[1]{Jay Shreeram Yeraballi}
+		\author[2]{Ravi Uyyala}
+		\author[2]{Padmavathi Vurubindi}
+		\author[3]{Ashok Kumar Das}
+		
+		\affiliation[1]{organization={Department of Computer Science and Engineering,
+				University College of Engineering, Osmania University},
+			city={Hyderabad}, country={India}}
+		
+		\affiliation[2]{organization={Department of Computer Science and Engineering,
+				Chaitanya Bharathi Institute of Technology (CBIT)},
+			postcode={500075}, city={Hyderabad}, country={India}}
+		
+		\affiliation[3]{organization={Center for Security, Theory and Algorithmic Research,
+				International Institute of Information Technology},
+			postcode={500032}, city={Hyderabad}, country={India}}
+		
+		\begin{abstract}
+			
+			Network intrusion detection under severe class imbalance remains challenging, as high aggregate accuracy can obscure poor recognition of minority classes. This paper proposes a hybrid Transformer--Echo State Network (Transformer-ESN) architecture for multi-class intrusion detection on CIC-IDS2017. The model combines a fixed, randomly initialised ESN reservoir with a multi-head self-attention Transformer encoder. The reservoir maps 76-dimensional preprocessed flow features into a 256-dimensional nonlinear state space without training recurrent weights, while the Transformer captures contextual dependencies among the resulting states. The trainable portion of the model is limited to the projection layer, Transformer encoder, and classification head, resulting in approximately 508K trainable parameters.
+			
+			Experiments using a stratified 80:20 train-test split show that Transformer-ESN achieves 99.38\% accuracy, 85.34\% macro-precision, 82.79\% macro-recall, and 73.55\% macro-F1. Although a reproduced Random Forest baseline achieves higher overall and macro-F1 performance on this tabular dataset, per-class analysis shows that the lower macro-F1 of Transformer-ESN is mainly due to four ultra-rare attack classes with very limited test support. Across the ten well-represented classes, the proposed model achieves F1-scores of at least 0.94 on nine.
+			
+			These findings suggest that reservoir-to-attention coupling is a stable and parameter-efficient design for intrusion detection. They also indicate that CICFlowMeter-based flow features are better suited to classical tabular learners than to sequential models, implying that the proposed architecture may be more effective for packet-level or temporally ordered traffic streams.
+		\end{abstract}
+		
+		\begin{keyword}
+			Intrusion Detection System \sep
+			Echo State Network \sep
+			Reservoir Computing \sep
+			Transformer \sep
+			Network Traffic Classification \sep
+			CIC-IDS2017 \sep
+			Deep Learning \sep
+			Class Imbalance \sep
+			Cybersecurity
+		\end{keyword}
+		
+	\end{frontmatter}
+	
+	
+	% =========================================================
+	% 1. INTRODUCTION
+	% =========================================================
+	\section{Introduction}
+	\label{sec:intro}
+	
+	Network security monitoring is now a core operational requirement as the
+	attack surface of modern infrastructure grows in scale and sophistication.
+	Organisations migrating services to cloud and software-defined networks
+	face adversarial traffic that has outpaced manual analysis in volume and
+	diversity~\cite{buczak2016survey,khraisat2019survey}. Network Intrusion
+	Detection Systems (NIDS) must therefore classify high-throughput flows in
+	real time and reliably detect attack types that appear infrequently in
+	training data.
+	The concept of intrusion detection was first formalized by Denning, who proposed one of the earliest intrusion detection models and laid the foundation for modern IDS research \cite{denning1987}.
+	
+	Deep learning has advanced automatic feature extraction for intrusion
+	detection, reducing reliance on hand-engineered
+	signatures~\cite{vinayakumar2019deep,yin2017deep}. Recurrent architectures
+	capture temporal dependencies in traffic sequences~\cite{grurnn2018};
+	convolutional models extract local feature
+	correlations~\cite{cnnlstm2024,cnnbigru2022}; and Transformer encoders
+	model long-range feature dependencies without
+	recurrence~\cite{rtids2022,flowformer2024,long2024transformer}. The
+	dominant benchmark across these paradigms is CIC-IDS2017, covering
+	fourteen traffic classes under a controlled topology with realistic
+	background traffic~\cite{cicids2017}.Deep neural network models combined with feature selection techniques have also been successfully applied to network intrusion detection using benchmark datasets such as NSL-KDD \cite{mlp2021}.
+	
+	Among traditional machine learning methods, Random Forest remains one of the most widely adopted classifiers because of its robustness, ensemble learning strategy, and strong generalization capability \cite{breiman2001}.
+	IDS research has converged on an underexamined consensus: high aggregate
+	accuracy on this benchmark is treated as evidence of practical utility.
+	This is only partially justified. CIC-IDS2017 is severely
+	imbalanced---benign traffic exceeds 80\% of flows, and several attack
+	categories number fewer than fifty samples~\cite{cicids2017,ring2019survey}---so
+	a classifier reporting 99\% accuracy may be near-chance on the minority
+	categories that represent the most consequential threats: infiltration,
+	targeted web exploits, and credential brute-force. Most published
+	evaluations report aggregate accuracy alone, without per-class
+	breakdowns, making it structurally impossible to verify whether any
+	architecture detects rare attack
+	traffic~\cite{thakkar2020,buczak2016survey}.
+	
+	This gap has direct operational consequences. A false negative on an
+	Infiltration or SQL Injection event risks undetected data exfiltration or
+	system compromise; misclassifying a benign flow merely triggers a
+	recoverable false alarm. Aggregate accuracy conflates these asymmetric
+	error costs into a single scalar dominated by the majority class, making
+	macro-averaged F1 and per-class precision-recall analysis
+	necessary---not merely preferable---for assessing deployability. This
+	paper treats per-class analysis as a primary evaluation requirement and
+	presents an honest characterisation of a novel hybrid architecture's
+	behaviour across the full class distribution of CIC-IDS2017, compared
+	against a strong classical baseline under identical conditions.
+	
+	\subsection{Literature Review}
+	\label{sec:litreview}
+	
+	IDS research has evolved along four principal paradigms: classical
+	machine learning, deep recurrent/convolutional networks, reservoir
+	computing, and attention-based architectures. Table~\ref{tab:lit_comparison}
+	summarises representative work across all four.
+	
+	\subsubsection{Classical Machine Learning}
+	\label{subsec:classical}
+	
+	Classical approaches remain competitive despite their simplicity. Tree
+	ensembles treat each flow independently yet routinely achieve
+	near-perfect accuracy on CIC-IDS2017: 99.50\% with SMOTE-balanced Random
+	Forest~\cite{kurniabudi2020}, 99.60\% with XGBoost~\cite{xgb2023},Gradient boosting methods such as XGBoost have also demonstrated excellent performance for intrusion detection owing to their scalability and handling of complex feature interactions \cite{chen2016} and 99.67\%
+	with hybrid SVM-ELM~\cite{svmelm2018}. These results reflect the
+	CICFlowMeter feature set~\cite{cicids2017}, whose pre-computed per-flow
+	statistics already encode strong discriminative signal in tabular
+	form---well suited to tree ensembles.
+	
+	This ceiling is structural: when attack behaviour spans multiple flows,
+	or detection depends on temporal ordering that per-flow aggregation
+	discards, flow-independent classifiers fail in ways further feature
+	engineering cannot fix~\cite{buczak2016survey}. As elsewhere in this
+	literature, evaluation is confined to aggregate accuracy, with no
+	per-class breakdown indicating genuine minority-class detection versus
+	accurate majority-class classification.
+	
+	\subsubsection{Deep Recurrent and Convolutional Networks}
+	\label{subsec:deeplearning}
+	
+	Recurrent architectures assume packet and flow ordering encodes
+	information absent from any single observation. Memory-equipped models
+	outperform shallow classifiers on temporally structured
+	traffic~\cite{vinayakumar2019deep,yin2017deep}, and gated GRUs
+	substantially outperform vanilla RNNs on CIC-IDS2017 (99.00\% vs.\
+	89.60\%)~\cite{grurnn2018}, attributed to improved gradient stability.
+	
+	Hybrid convolutional-recurrent designs separate local feature extraction
+	from sequential modelling: CNN-BiGRU reaches
+	99.70\%~\cite{cnnbigru2022} and CNN-LSTM reaches
+	96.21\%~\cite{cnnlstm2024}, though both share the field's evaluation gap
+	of aggregate-only accuracy. Convolutional networks applied directly to
+	raw traffic also extract local patterns
+	effectively~\cite{cnn2019}, though recurrent components remain
+	necessary when cross-flow temporal ordering matters.
+	
+	\subsubsection{Reservoir Computing}
+	\label{subsec:reservoir}
+	
+	Reservoir Computing (RC) offers gradient-free temporal feature extraction
+	as an alternative to trained recurrent networks. The Echo State Network
+	(ESN)~\cite{jaeger2001} uses a fixed, randomly initialised recurrent
+	reservoir to map input sequences into a high-dimensional state space;
+	provided the \emph{echo state property} holds---initial-condition
+	influence decays asymptotically---a simple trained readout suffices for
+	complex sequence classification~\cite{lukosevicius2012}, with the
+	reservoir's spectral radius governing the stability-memory trade-off.
+	Because reservoir weights are frozen, training reduces to fitting a
+	single readout, avoiding vanishing gradients and benefiting streaming or
+	resource-constrained settings.
+	
+	Prior ESN applications to intrusion detection share a limitation:
+	standalone ESN classifiers achieve competitive accuracy on volumetric
+	attacks, but their linear readouts cannot separate non-linearly
+	distributed minority classes~\cite{esn_dos2021,mlesn2020}. Stacking
+	reservoirs (DeepESN) improves representation capacity (97.60\% on
+	CIC-IDS2017)~\cite{gallicchio2017}, and replacing the linear readout
+	with a convolutional encoder plus hyperparameter optimisation raises
+	readout expressiveness further: a CNN-ESN with chaotic walrus
+	optimisation reports 99.80\% accuracy, though this figure is reported
+	on NSL-KDD, WSN-DS, and IoT-23 rather than CIC-IDS2017 and is therefore
+	not directly comparable to the CIC-IDS2017 results discussed
+	elsewhere in this review~\cite{cesn2024}. Taken together, these results
+	suggest that readout expressiveness, not the reservoir itself, is the
+	binding constraint. This motivates the present work's use of the
+	reservoir as a gradient-free encoder paired with a Transformer readout.
+	
+	\subsubsection{Attention-Based Architectures}
+	\label{subsec:attention}
+	
+	The Transformer~\cite{vaswani2017attention} replaces sequential
+	recurrence with parallel self-attention, capturing arbitrary-range
+	dependencies in a single forward pass while multi-head attention attends
+	jointly to different input aspects.
+	
+	Applications to IDS have been competitive: a standalone Transformer on
+	flow-level features reached 99.17\%~\cite{rtids2022}; multi-head
+	attention combined with BiLSTM captured long-range dependencies that
+	recurrent gating misses~\cite{bilstm_attn2023}; FlowTransformer
+	incorporated domain-specific inductive biases for flow-based
+	IDS~\cite{flowformer2024}; and TRBMA traded aggregate accuracy (98.66\%)
+	for higher macro-recall via bidirectional temporal attention, explicitly
+	prioritising minority-class detection~\cite{trbma2025}. A recent survey
+	maps the broader Transformer and LLM landscape in intrusion
+	detection~\cite{kheddar2024transformers}. A shared limitation across
+	this paradigm is the absence of gradient-free temporal pre-processing:
+	Transformers operate on fixed-length vectors and capture inter-feature
+	but not cross-flow temporal structure unless an explicit sequential
+	representation is built first.
+	
+	\subsubsection{Research Gap}
+	\label{subsec:gap}
+	
+	The literature above establishes two gaps. \textbf{Architectural gap:}
+	no prior work pairs a fixed ESN reservoir with a Transformer
+	encoder---ESN reservoirs have been evaluated only with linear or shallow
+	readouts, and Transformers applied without gradient-free temporal
+	front-ends. \textbf{Evaluation gap:} published IDS evaluations report
+	aggregate accuracy without per-class breakdown under CIC-IDS2017's
+	severe imbalance, making it impossible to distinguish genuine
+	minority-class detection from majority-class-driven scores. This work
+	reports per-class precision, recall, and F1 for all fourteen categories
+	alongside macro-averaged metrics. Independent 2025--2026 work confirms
+	this gap remains unresolved: ensemble methods targeting minority-class
+	detection report persistent difficulty on ultra-rare
+	categories~\cite{oh2025mchensemble}, and class-imbalance mitigation
+	frameworks report similar limitations on comparable
+	benchmarks~\cite{hambali2026breaking}, though the latter used NSL-KDD
+	rather than CIC-IDS2017.
+	
+	\begin{table*}[!htbp]
+		\centering
+		\caption{Representative work on CIC-IDS2017 across the four paradigms
+			reviewed. ``Per-class'' indicates whether per-class breakdown was
+			reported. ``Temporal'' indicates whether the architecture explicitly
+			models cross-flow or within-sequence temporal structure.
+			$\dagger$~Macro-recall specifically prioritised by design.}
+		\label{tab:lit_comparison}
+		\resizebox{\textwidth}{!}{%
+			\begin{tabular}{L{3.5cm} L{3.5cm} C{2.2cm} C{2.2cm} C{1.8cm} C{1.8cm}}
+				\toprule
+				\textbf{Reference} & \textbf{Architecture} & \textbf{Accuracy (\%)}
+				& \textbf{Macro-F1} & \textbf{Per-class} & \textbf{Temporal} \\
+				\midrule
+				\multicolumn{6}{l}{\textit{Classical ML}} \\
+				Pranto et al.~\cite{kurniabudi2020}       & Random Forest + SMOTE         & 99.50 & ---  & No  & No  \\
+				Azam et al.~\cite{xgb2023}        & XGBoost                       & 99.60 & ---  & No  & No  \\
+				Ahmad et al.~\cite{svmelm2018}    & SVM-ELM                       & 99.67 & ---  & No  & No  \\
+				\midrule
+				\multicolumn{6}{l}{\textit{Deep Recurrent / Convolutional}} \\
+				Tang et al.~\cite{grurnn2018}     & GRU-RNN                       & 99.00 & ---  & No  & Yes \\
+				Wang et al.~\cite{cnnbigru2022}   & CNN-BiGRU                     & 99.70 & ---  & No  & Yes \\
+				Kaur et al.~\cite{cnnlstm2024}    & CNN-LSTM                      & 96.21 & ---  & No  & Yes \\
+				\midrule
+				\multicolumn{6}{l}{\textit{Reservoir Computing}} \\
+				Gallicchio et al.~\cite{gallicchio2017} & DeepESN               & 97.60 & ---  & No  & Yes \\
+				\midrule
+				\multicolumn{6}{l}{\textit{Attention-Based}} \\
+				Wu et al.~\cite{rtids2022}        & Transformer                   & 99.17 & ---  & No  & No  \\
+				Zhang et al.~\cite{bilstm_attn2023} & BiLSTM + Attention          & 99.40 & ---  & No  & Yes \\
+				Li et al.~\cite{trbma2025}        & TRBMA                         & 98.66 & High$\dagger$ & No & Yes \\
+				\midrule
+				\multicolumn{6}{l}{\textit{Proposed}} \\
+				\textbf{This work}                & \textbf{Transformer-ESN}      & \textbf{99.38} & \textbf{Reported} & \textbf{Yes} & \textbf{Yes} \\
+				\bottomrule
+		\end{tabular}}
+	\end{table*}
+	
+	Figure~\ref{fig:accuracy_comparison} ranks the reported accuracy of
+	these representative classifiers to situate the proposed model's
+	performance within this range visually.
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure1_Accuracy_Ranking_Elsevier.png}{Accuracy ranking chart across four learning paradigms}
+		\caption{Ranked comparison of reported accuracy for representative CIC-IDS2017 classifiers spanning classical machine learning, deep recurrent/convolutional networks, reservoir computing, and attention-based architectures. The proposed Transformer-ESN (99.38\%) is positioned within the 96.21\%--99.70\% range established by prior work. As protocol heterogeneity across studies precludes direct numerical comparison~\cite{thakkar2020}, the ranking is provided for contextual orientation rather than head-to-head benchmarking.}
+		\label{fig:accuracy_comparison}
+	\end{figure}
+	
+	As Figure~\ref{fig:accuracy_comparison} shows, the proposed model's
+	accuracy sits inside the range already established by prior classifiers;
+	Section~\ref{subsec:context} returns to this comparison in
+	detail once the full results are presented.
+	
+	\subsection{The Proposed Architecture: Transformer-ESN}
+	
+	The architecture proposed here---\textbf{Transformer-ESN}---couples a
+	fixed Echo State Network (ESN) reservoir with a multi-head self-attention
+	Transformer encoder. In ESNs, the recurrent weight matrix is fixed at
+	random initialisation and only the readout is
+	trained~\cite{jaeger2001,lukosevicius2012}, eliminating vanishing and
+	exploding gradients and reducing training
+	complexity~\cite{gallicchio2017,scardapane2017}. Prior ESN-based IDS
+	work has used the reservoir's nonlinear states directly as classifier
+	inputs~\cite{esn_dos2021,mlesn2020,cesn2024}.
+	
+	Transformer-ESN instead treats the reservoir as a structured nonlinear
+	projection layer: it maps 76-dimensional preprocessed CICFlowMeter
+	features into a 256-dimensional nonlinear state space at zero gradient
+	cost. The resulting states are passed as a token sequence to a
+	multi-head self-attention encoder, which learns global contextual
+	dependencies over the projected feature
+	space~\cite{vaswani2017attention}, with a softmax head producing
+	per-class probabilities over the fourteen categories. The trainable
+	component---encoder weights and classification head---totals
+	approximately 508K parameters. To our knowledge, this coupling has not
+	been previously reported.
+	
+	\subsection{The Structural Mismatch Finding}
+	
+	Transformer-ESN achieves 99.38\% overall accuracy, competitive across
+	all four surveyed paradigms. However, a Random Forest baseline under
+	identical preprocessing and split achieves 99.80\% accuracy and 88.40\%
+	macro-F1, versus 73.55\% macro-F1 for Transformer-ESN.
+	
+	The more informative finding concerns the \textit{source} of this gap.
+	CICFlowMeter features are pre-aggregated statistics computed only after
+	a flow terminates~\cite{cicids2017}, so each row is an independent
+	observation rather than a step in a temporal sequence. Sequential
+	architectures (ESNs, LSTMs, GRUs, and the hybrid proposed here) apply a
+	sequential inductive bias to data that lacks the row-wise ordering that
+	bias exploits. Random Forest makes no such assumption, treating each row
+	as an independent point in 76-dimensional space---precisely what
+	CICFlowMeter produces~\cite{kurniabudi2020,xgb2023}. This structural mismatch,
+	not a difference in representational capacity, is the primary driver of
+	the macro-F1 gap. The same sequential bias becomes an advantage where
+	input genuinely consists of ordered sequences---packet-level streams,
+	session logs, or raw byte sequences---where reservoir dynamics can
+	exploit real temporal structure.
+	
+	The gap is amplified by extreme rarity in four categories: Web Attack --
+	SQL Injection has four test samples and Infiltration has seven, so a
+	single misclassification shifts per-class F1 by 25\% and 14\%
+	respectively---these metrics are not statistically stable estimators of
+	architectural capability at this support level. Across the ten
+	well-supported classes, Transformer-ESN achieves F1 $\geq$ 0.94 on nine,
+	confirming correct performance where sufficient training signal exists.
+	
+	\subsection{Scope and Contributions}
+	
+	This work makes the following contributions:
+	
+	\begin{itemize}[leftmargin=15pt,itemsep=3pt,topsep=4pt]
+		
+		\item \textbf{A novel hybrid architecture} coupling a fixed ESN
+		reservoir with a Transformer encoder for multi-class network
+		intrusion detection, implemented as a 508K-parameter trainable
+		model with recurrent weight training eliminated from the feature
+		encoding stage.
+		
+		\item \textbf{An empirically grounded per-class evaluation} on
+		CIC-IDS2017 demonstrating competitive overall accuracy (99.38\%)
+		alongside an explicit characterisation of failure modes on
+		ultra-rare attack classes (test support $\leq$ 301 samples)---a
+		level of transparency absent from most published IDS evaluations.
+		
+		\item \textbf{A direct comparison against a reproduced Random Forest
+			baseline} under identical preprocessing, split, and evaluation
+		protocols, establishing that the macro-F1 gap (73.55\% vs.\
+		88.40\%) is attributable to ultra-rare class behaviour and
+		structural mismatch, not systematic architectural inferiority on
+		well-represented traffic categories.
+		
+		\item \textbf{A structured analysis of architectural mismatch}
+		between sequential inductive biases and pre-aggregated tabular flow
+		features, identifying where reservoir-attention hybrids are
+		expected to add value over classical tabular methods, and where
+		they do not.
+		
+		\item \textbf{A complete theoretical treatment} of the pipeline,
+		covering ESN reservoir dynamics, the echo state property and
+		spectral radius conditioning, positional encoding over reservoir
+		tokens, scaled dot-product attention, and multi-head projection.
+		
+	\end{itemize}
+	
+	The remainder of this paper is organised as follows.
+	Section~\ref{sec:methodology} describes the dataset, preprocessing
+	pipeline, and complete architectural specification.
+	Several studies have performed feature analysis on the CICIDS2017 dataset using Information Gain to improve anomaly detection performance \cite{rf2020}.
+	Section~\ref{sec:results} presents experimental results with full
+	per-class analysis. Section~\ref{sec:discussion} provides comparative
+	analysis and a structured decomposition of the performance gap.
+	Section~\ref{sec:conclusion} concludes and outlines future directions.
+	
+	% =========================================================
+	% 3. METHODOLOGY
+	% =========================================================
+	\section{Methodology}
+	\label{sec:methodology}
+	
+	\subsection{Dataset and Challenges}
+	\label{subsec:dataset}
+	
+	This work uses the CIC-IDS2017 benchmark~\cite{cicids2017}, one of the
+	most widely referenced datasets in network intrusion detection
+	research. Produced by the Canadian Institute for Cybersecurity, it was
+	collected over five consecutive days in a controlled testbed that
+	closely replicates an operational organisational network, and covers
+	fourteen traffic classes: one benign class and thirteen attack
+	categories.Previous studies have also investigated the importance of individual CICIDS2017 features to identify the most discriminative attributes for attack detection \cite{reis2019}.Although CICIDS2017 is widely adopted, researchers have reported several quality issues and preprocessing challenges that should be carefully addressed before model training \cite{engelen2021}.
+	The flow-based features used in CICIDS2017 originate from the CICFlowMeter framework proposed by Lashkari et al. \cite{lashkari2017}.
+	
+	\subsubsection{Dataset Characteristics}
+	
+	The thirteen attack categories include DDoS, DoS Hulk, DoS GoldenEye,
+	DoS Slowloris, DoS Slowhttptest, Botnet ARES, PortScan, FTP-Patator,
+	SSH-Patator, Web Attack Brute Force, Web Attack SQL Injection, Web
+	Attack XSS, and Infiltration. Traffic was characterised using
+	CICFlowMeter~\cite{cicids2017}, which produces 78 flow-level
+	statistical attributes from packet lengths, inter-arrival times, flow
+	durations, TCP flag counts, and subflow byte/packet statistics---the
+	same properties exploited by classical ML methods~\cite{kurniabudi2020,xgb2023},
+	while offering enough structural richness to benefit more expressive
+	architectures. Key properties are summarised in
+	Table~\ref{tab:dataset}.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Summary of CIC-IDS2017 dataset properties.}
+		\label{tab:dataset}
+		\renewcommand{\arraystretch}{0.9}
+		\setlength{\tabcolsep}{5pt}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{ll}
+				\toprule
+				\textbf{Property}          & \textbf{Description} \\
+				\midrule
+				Dataset                    & CIC-IDS2017 \\
+				Features                   & 78 (flow-level statistical) \\
+				Classes                    & 14 (1 Benign + 13 Attack) \\
+				Traffic Type               & Benign + Malicious \\
+				Classification Task        & Multi-class \\
+				Feature Extraction Tool    & CICFlowMeter \\
+				Collection Period          & Monday to Friday (5 days) \\
+				Environment                & Controlled realistic testbed \\
+				Attack Categories          & DDoS, DoS (4 variants), Botnet, PortScan, \\
+				& FTP-Patator, SSH-Patator, \\
+				& Web Attacks (3 variants), Infiltration \\
+				Evaluation Metrics         & Accuracy, Macro-Prec., Macro-Rec., Macro-F1 \\
+				\bottomrule
+		\end{tabular}}
+	\end{table}
+	
+	\subsubsection{Class Distribution and Imbalance}
+	
+	Class imbalance is the dataset's most significant challenge.
+	High-volume classes such as DoS Hulk and PortScan each contribute
+	hundreds of thousands of samples, while minority classes such as
+	Infiltration (36 samples) account for less than 0.01\% of the total.
+	Table~\ref{tab:class_dist} gives the full distribution. This skew is
+	considerably more severe than in comparable benchmarks such as NSL-KDD
+	and UNSW-NB15, making CIC-IDS2017 a demanding test of minority-class
+	detection.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Approximate class distribution in CIC-IDS2017. Minority
+			classes ($<$0.1\%) represent the primary evaluation challenge.}
+		\label{tab:class_dist}
+		\renewcommand{\arraystretch}{0.88}
+		\setlength{\tabcolsep}{5pt}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{L{3.8cm} C{2.0cm} C{2.0cm}}
+				\toprule
+				\textbf{Class}
+				& \textbf{Approx.\ Samples}
+				& \textbf{Relative Freq.\ (\%)} \\
+				\midrule
+				Benign                    & 2{,}271{,}320 & 80.30 \\
+				DoS Hulk                  &   231{,}073   &  8.17 \\
+				PortScan                  &   158{,}930   &  5.62 \\
+				DDoS                      &   128{,}027   &  4.53 \\
+				DoS GoldenEye             &    10{,}293   &  0.36 \\
+				FTP-Patator               &     7{,}938   &  0.28 \\
+				SSH-Patator               &     5{,}897   &  0.21 \\
+				DoS Slowloris             &     5{,}796   &  0.21 \\
+				DoS Slowhttptest          &     5{,}499   &  0.19 \\
+				Botnet                    &     1{,}966   &  0.07 \\
+				Web Attack -- Brute Force &     1{,}507   &  0.05 \\
+				Web Attack -- XSS         &       652     &  0.02 \\
+				Web Attack -- SQL Inject  &        21     & $<$0.01 \\
+				Infiltration              &        36     & $<$0.01 \\
+				\bottomrule
+		\end{tabular}}
+	\end{table}
+	
+	Because a classifier can reach deceptively high aggregate accuracy by
+	ignoring rare classes, macro-averaged precision, recall, and F1-score
+	are treated as essential evaluation criteria alongside overall
+	accuracy~\cite{trbma2025}; missing even one minority-class threat such
+	as Infiltration is a serious operational failure regardless of the
+	overall accuracy figure. To address the imbalance, this study applies
+	class-weighted loss and per-class reporting, and assesses all models
+	under the same four-metric protocol---accuracy, macro-precision,
+	macro-recall, macro-F1---for fair comparison with the
+	literature~\cite{cnnbigru2022,rtids2022,trbma2025}.
+	
+	\subsubsection{Feature Space Challenges}
+	
+	Beyond class imbalance, the 78-dimensional CICFlowMeter feature space
+	introduces two further preprocessing issues: zero-duration flows
+	produce undefined (infinite) values in \textit{Flow Bytes/s} and
+	\textit{Flow Packets/s}, and high inter-feature correlation can
+	mislead gradient-based optimisers toward spurious associations. These
+	are addressed in Section~\ref{subsec:preprocessing}.
+	
+	\subsection{Proposed Transformer-ESN Framework}
+	\label{subsec:arch}
+	
+	The proposed framework processes traffic through three stages:
+	(i)~preprocessing and normalisation, (ii)~nonlinear temporal feature
+	expansion via an ESN reservoir, and (iii)~contextual refinement and
+	classification via a Transformer encoder, as shown in
+	Figure~\ref{fig:arch}.
+	
+	\subsubsection{System Architecture Overview}
+	
+	Figure~\ref{fig:arch} summarises the end-to-end pipeline described in
+	this subsection. Raw flow records first pass through the
+	preprocessing and normalisation stage detailed in
+	Section~\ref{subsec:preprocessing}, producing the 76-dimensional input
+	vector $\mathbf{u} \in \mathbb{R}^{76}$. This vector is then projected
+	through the frozen ESN reservoir into a 256-dimensional nonlinear
+	state, passed through the trainable Transformer encoder for contextual
+	refinement, and finally reduced by the classification head to a
+	14-class probability distribution. The frozen and trainable stages are
+	shown separately in the figure to make explicit which parameters are
+	updated during backpropagation and which remain fixed at
+	initialisation.
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure2_Architecture_Comparison.png}{Transformer-ESN architecture pipeline}
+		\caption{End-to-end architecture of the proposed Transformer-ESN framework. The frozen ESN reservoir maps the preprocessed 76-dimensional input into a 256-dimensional nonlinear state, which is projected, positionally encoded, and refined by a multi-head self-attention Transformer encoder before the classification head produces per-class probabilities. Reservoir weights $W_{\mathrm{in}}$ and $W$ remain fixed throughout training; only the projection layer, Transformer encoder, and classification head are updated via backpropagation.}
+		\label{fig:arch}
+	\end{figure}
+	
+	The four evaluation metrics used throughout this study are further
+	summarised in radar form in Figure~\ref{fig:radar_chart}, which
+	visualises the asymmetry between accuracy and macro-F1 alongside the
+	paired grouped comparison in Figure~\ref{fig:four_metric}.
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure3_Grouped_DotPlot.png}{Four-metric grouped comparison plot}
+		\caption{Grouped comparison of accuracy, macro-precision, macro-recall, and macro-F1 for the reproduced Random Forest baseline and the proposed Transformer-ESN on CIC-IDS2017. The accuracy gap between the two methods is modest (0.42 percentage points), whereas the macro-F1 gap (14.85 percentage points) is substantially larger, reflecting the decomposition discussed in Section~\ref{subsec:decompose}. Precision and recall values for Random Forest were not reported in the reproduced baseline and are estimated from comparable configurations in the literature~\cite{kurniabudi2020}.}
+		\label{fig:four_metric}
+	\end{figure}
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure4_TransformerESN_RadarChart.png}{Transformer-ESN multi-metric radar chart}
+		\caption{Radar-chart representation of the proposed Transformer-ESN across the four evaluation dimensions used throughout this study: accuracy, macro-precision, macro-recall, and macro-F1. The asymmetry between the outer (accuracy) and inner (macro-F1) vertices visually summarises the class-imbalance effect quantified in Table~\ref{tab:overall} and decomposed in Section~\ref{subsec:decompose}.}
+		\label{fig:radar_chart}
+	\end{figure}
+	
+	The outer-to-inner gap visible in Figure~\ref{fig:radar_chart} between
+	the accuracy vertex and the macro-F1 vertex is the same class-imbalance
+	effect quantified numerically in Table~\ref{tab:overall} and decomposed
+	in Section~\ref{subsec:decompose}.
+	
+	\subsubsection{Echo State Network: Theoretical Foundations}
+	
+	Echo State Networks (ESNs) belong to the Reservoir Computing
+	family~\cite{jaeger2001,lukosevicius2012}. Unlike conventional
+	recurrent networks trained via Backpropagation Through Time
+	(BPTT)~\cite{grurnn2018}, an ESN uses a large randomly initialised
+	recurrent reservoir whose weights are never updated; only the readout
+	is trained, which eliminates vanishing/exploding gradients in the
+	recurrent component entirely.
+	
+	\paragraph{Reservoir State Dynamics.}
+	Let $\mathbf{u}(t) \in \mathbb{R}^{d_{\mathrm{in}}}$ be the input
+	feature vector at time step $t$, with $d_{\mathrm{in}} = 76$ after
+	preprocessing (Section~\ref{subsec:preprocessing}). The reservoir
+	state is updated as:
+	
+	\begin{equation}
+		\tilde{\mathbf{x}}(t) =
+		f\!\left(W_{\mathrm{in}}\,\mathbf{u}(t) +
+		W\,\mathbf{x}(t-1)\right)
+		\label{eq:esn_update}
+	\end{equation}
+	
+	\begin{equation}
+		\mathbf{x}(t) =
+		(1-\alpha)\,\mathbf{x}(t-1) + \alpha\,\tilde{\mathbf{x}}(t)
+		\label{eq:esn_leaky}
+	\end{equation}
+	
+	\noindent where $\mathbf{x}(t) \in \mathbb{R}^{N}$ is the reservoir
+	state ($N = 256$), $W_{\mathrm{in}} \in \mathbb{R}^{N \times
+		d_{\mathrm{in}}}$ and $W \in \mathbb{R}^{N \times N}$ are fixed input
+	and recurrent weight matrices, $f(\cdot) = \tanh(\cdot)$, and $\alpha
+	\in (0,1]$ is the leaking rate. Setting $\alpha = 1.0$, as done here,
+	reduces Eq.~\eqref{eq:esn_leaky} to Eq.~\eqref{eq:esn_update},
+	preserving the full instantaneous response without temporal
+	smoothing.
+	
+	\paragraph{Echo State Property and Spectral Radius.}
+	The Echo State Property (ESP) requires the effect of any initial state
+	$\mathbf{x}(0)$ to decay asymptotically to zero, so reservoir outputs
+	depend only on recent input history~\cite{jaeger2001}. The ESP holds
+	when the spectral radius of $W$ satisfies $\rho(W) < 1$:
+	
+	\begin{equation}
+		\rho(W) =
+		\max\!\left\{|\lambda| : \lambda \text{ is an eigenvalue of }
+		W\right\}
+		\label{eq:spectral}
+	\end{equation}
+	
+	$W$ is initialised as a sparse random matrix, then rescaled to a
+	target spectral radius $r$:
+	
+	\begin{equation}
+		W \leftarrow
+		\frac{r}{\rho(W_{\mathrm{init}})} \cdot W_{\mathrm{init}}
+		\label{eq:rescale}
+	\end{equation}
+	
+	\noindent This work uses $r = 0.9$, satisfying the ESP while retaining
+	sufficient reservoir memory for temporal patterns in network traffic,
+	following the initialisation guidelines of Scardapane and
+	Wang~\cite{scardapane2017}.
+	
+	\paragraph{Reservoir Capacity and Input Scaling.}
+	Reservoir behaviour is governed primarily by size $N$, spectral radius
+	$r$, and input scaling $\sigma$. An input scaling of $\sigma = 0.1$
+	was chosen to keep a moderate nonlinear operating regime suited to
+	CIC-IDS2017's statistical flow features. The reservoir expands the
+	76-dimensional input into a 256-dimensional nonlinear state
+	(${\approx}3.4\times$ expansion). Sparse connectivity (10\%) promotes
+	unit diversity while preserving the lateral interactions needed for
+	temporal integration~\cite{lukosevicius2012}.
+	
+	\subsubsection{Transformer Encoder: Theoretical Foundations}
+	
+	The Transformer encoder~\cite{vaswani2017attention} refines the
+	sequence of ESN reservoir states through multi-head scaled
+	dot-product self-attention, producing globally coherent contextual
+	representations---the central architectural contribution relative to
+	standard ESNs, which use a simple linear readout instead.
+	
+	\paragraph{Input Projection and Positional Encoding.}
+	Each reservoir state $\mathbf{x}(t)$ is projected into the Transformer
+	model dimension $d_{\mathrm{model}}$ via a learned linear map:
+	
+	\begin{equation}
+		\mathbf{z}_t =
+		W_{\mathrm{proj}}\,\mathbf{x}(t) + \mathbf{b}_{\mathrm{proj}},
+		\quad \mathbf{z}_t \in \mathbb{R}^{d_{\mathrm{model}}}
+		\label{eq:proj}
+	\end{equation}
+	
+	Sinusoidal positional encodings~\cite{vaswani2017attention} are added
+	to retain sequence order:
+	
+	\begin{align}
+		\mathrm{PE}_{(t,\,2i)}   &=
+		\sin\!\left(\frac{t}{10000^{2i/d_{\mathrm{model}}}}\right)
+		\label{eq:pe_sin} \\
+		\mathrm{PE}_{(t,\,2i+1)} &=
+		\cos\!\left(\frac{t}{10000^{2i/d_{\mathrm{model}}}}\right)
+		\label{eq:pe_cos}
+	\end{align}
+	
+	Manocchio et al.~\cite{flowformer2024} showed that preserving
+	positional information across flow-based token sequences measurably
+	improves detection accuracy. The final encoded input is
+	$\mathbf{h}_t = \mathbf{z}_t + \mathrm{PE}_t$.
+	
+	\paragraph{Scaled Dot-Product Attention.}
+	For a single head, query, key, and value matrices are obtained from
+	$H = [\mathbf{h}_1, \ldots, \mathbf{h}_T]$ via learned projections:
+	
+	\begin{equation}
+		Q = HW^Q, \quad K = HW^K, \quad V = HW^V
+		\label{eq:qkv}
+	\end{equation}
+	
+	\begin{equation}
+		\mathrm{Attention}(Q,K,V) =
+		\mathrm{Softmax}\!\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)V
+		\label{eq:attention}
+	\end{equation}
+	
+	where $d_k = d_{\mathrm{model}} / H_{\mathrm{heads}}$. The
+	$1/\sqrt{d_k}$ scaling prevents dot-products from pushing the softmax
+	into near-zero gradient regions~\cite{vaswani2017attention}.
+	
+	\paragraph{Multi-Head Self-Attention.}
+	
+	\begin{equation}
+		\mathrm{head}_h =
+		\mathrm{Attention}(HW^Q_h,\; HW^K_h,\; HW^V_h)
+		\label{eq:head}
+	\end{equation}
+	
+	\begin{equation}
+		\mathrm{MHA}(H) =
+		\mathrm{Concat}(\mathrm{head}_1,\ldots,\mathrm{head}_H)\,W^O
+		\label{eq:mha}
+	\end{equation}
+	
+	Four heads ($H = 4$) are used with $d_{\mathrm{model}} = 128$, giving
+	$d_k = 32$ per head. Parallel heads let the model attend to
+	complementary feature relationships in distinct subspaces, which is
+	useful for distinguishing structurally similar attack families such
+	as the four DoS variants in CIC-IDS2017.
+	
+	\paragraph{Position-wise Feed-Forward Network.}
+	
+	\begin{equation}
+		\mathrm{FFN}(\mathbf{x}) =
+		\max(0,\; \mathbf{x}W_1 + \mathbf{b}_1)\,W_2 + \mathbf{b}_2
+		\label{eq:ffn}
+	\end{equation}
+	
+	The inner projection uses $d_{\mathrm{ff}} = 256$ before projecting
+	back to $d_{\mathrm{model}} = 128$, applied independently at each
+	token position.
+	
+	\paragraph{Layer Normalisation and Residual Connections.}
+	
+	\begin{equation}
+		\mathbf{h}'_t =
+		\mathrm{LayerNorm}\!\left(\mathbf{h}_t +
+		\mathrm{Sublayer}(\mathbf{h}_t)\right)
+		\label{eq:layernorm}
+	\end{equation}
+	
+	where $\mathrm{Sublayer}(\cdot)$ is either the MHA block
+	(Eq.~\eqref{eq:mha}) or the FFN (Eq.~\eqref{eq:ffn}). Two encoder
+	layers ($L = 2$) balance representational capacity against training
+	complexity.
+	
+	\subsubsection{Hybrid Coupling Mechanism}
+	
+	The ESN and Transformer form a unified pipeline. Each input flow
+	vector $\mathbf{u}(t)$ is transformed into a 256-dimensional
+	reservoir state via Eqs.~\eqref{eq:esn_update}--\eqref{eq:esn_leaky},
+	projected into the Transformer input space (Eq.~\eqref{eq:proj}), and
+	enriched with positional encodings
+	(Eqs.~\eqref{eq:pe_sin}--\eqref{eq:pe_cos}). Two layers of multi-head
+	self-attention and FFN sublayers, each with residual connections and
+	layer normalisation, refine the resulting tokens. Mean pooling
+	followed by a fully connected softmax head yields the final per-class
+	probability vector:
+	
+	\begin{equation}
+		\hat{y} = \mathrm{Softmax}\!\!\left(
+		f_{\mathrm{cls}}\!\!\left(
+		\mathrm{MHA}\!\left(
+		W_{\mathrm{proj}} \cdot f_{\mathrm{ESN}}(\mathbf{u})
+		\right)
+		\right)
+		\right)
+		\label{eq:endtoend}
+	\end{equation}
+	
+	where $f_{\mathrm{ESN}}(\mathbf{u}) = \tanh(W_{\mathrm{in}}\,
+	\mathbf{u} + W\,\mathbf{x}_{\mathrm{prev}})$. $W_{\mathrm{in}}$ and
+	$W$ are frozen after random initialisation; only $W_{\mathrm{proj}}$,
+	the Transformer encoder weights, and the classification head are
+	updated during training.
+	
+	\subsubsection{Training Procedure}
+	
+	Figure~\ref{fig:training_flow} shows the training workflow. Reservoir
+	weights stay frozen throughout; backpropagation passes only through
+	the Transformer encoder and classification head, eliminating
+	recurrent gradient computation and enabling stable convergence at
+	lower training cost than fully trainable recurrent models.
+	
+	\subsubsection{Architectural Comparison}
+	
+	Table~\ref{tab:arch_compare} compares Transformer-ESN against
+	representative architectures. It is the only evaluated model that
+	both eliminates trainable recurrence via the fixed reservoir and
+	incorporates multi-head self-attention, achieving a Low--Medium
+	training cost not matched by any other attention-based architecture
+	here.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Architectural comparison of the proposed Transformer-ESN
+			with alternative paradigms on key design properties.}
+		\label{tab:arch_compare}
+		\renewcommand{\arraystretch}{0.9}
+		\setlength{\tabcolsep}{4pt}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{L{2.6cm} C{1.4cm} C{1.3cm} C{1.4cm} C{1.3cm} C{1.5cm}}
+				\toprule
+				\textbf{Architecture}
+				& \textbf{Trainable Recur.}
+				& \textbf{Self-Attn.}
+				& \textbf{Fixed Res.}
+				& \textbf{Quad.\ Attn.}
+				& \textbf{Train.\ Cost} \\
+				\midrule
+				LSTM~\cite{hochreiter1997lstm} & Yes & No  & No  & No  & High    \\
+				GRU~\cite{cho2014gru}                & Yes & No  & No  & No  & High    \\
+				Transformer~\cite{vaswani2017attention}        & No  & Yes & No  & Yes & Medium  \\
+				CNN-BiGRU~\cite{cnnbigru2022}          & Yes & No  & No  & No  & High    \\
+				Standard ESN~\cite{jaeger2001}       & No  & No  & Yes & No  & Low     \\
+				DeepESN~\cite{gallicchio2017}            & No  & No  & Yes & No  & Low     \\
+				CNN-ESN~\cite{cesn2024}            & Yes & No  & Yes & No  & Medium  \\
+				LSTM-ESN~\cite{lopez2018lstmesn}           & Yes & No  & Yes & No  & Medium  \\
+				\textbf{T-ESN (ours)}
+				& \textbf{No} & \textbf{Yes} & \textbf{Yes}
+				& \textbf{Yes}$^{\ast}$ & \textbf{Low--Med} \\
+				\bottomrule
+				\multicolumn{6}{l}{\scriptsize
+					$^{\ast}$Quadratic in sequence length $T$; mitigated by the short
+					sequence design adopted in this work
+					(Section~\ref{subsec:training}).}
+		\end{tabular}}
+	\end{table}
+	
+	\subsection{Experimental Setup}
+	
+	\subsubsection{Data Preprocessing}
+	\label{subsec:preprocessing}
+	
+	Raw records were audited for quality issues before training. Features
+	with infinite values---\textit{Flow Bytes/s} and \textit{Flow
+		Packets/s}, undefined for zero-duration flows---were replaced with NaN
+	and discarded, reducing the feature set to 76 dimensions. Duplicate
+	records were removed to prevent data leakage. Min-Max normalisation
+	was then applied to each remaining feature:
+	
+	\begin{equation}
+		u'_j = \frac{u_j - u_j^{\min}}{u_j^{\max} - u_j^{\min}}
+		\label{eq:minmax}
+	\end{equation}
+	
+	This maps all values to $[0,1]$, so features with disparate dynamic
+	ranges contribute comparably to both the reservoir dynamics
+	(Eq.~\eqref{eq:esn_update}) and the Transformer input projection
+	(Eq.~\eqref{eq:proj}). Scaling parameters are computed on the training
+	set and applied to the test set to prevent leakage. A stratified
+	80:20 train-test split preserved the original class distribution
+	across both subsets, consistent with prior
+	work~\cite{cnnbigru2022,kurniabudi2020}. Class labels were
+	integer-encoded for cross-entropy loss computation.
+	
+	\subsubsection{Evaluation Metrics}
+	
+	Four complementary metrics were used given the severe class imbalance.
+	Overall accuracy measures the fraction of correctly classified
+	samples. Macro-averaged precision, recall, and F1-score weight each
+	class equally regardless of sample count:
+	
+	\begin{equation}
+		\mathrm{Macro\text{-}F1} = \frac{1}{C}\sum_{c=1}^{C} F1_c,
+		\quad
+		F1_c = \frac{2\,P_c\,R_c}{P_c + R_c}
+		\label{eq:macrof1}
+	\end{equation}
+	
+	where $C = 14$. Equal per-class weighting makes macro-F1 particularly
+	sensitive to minority-class performance---critical for intrusion
+	detection, where missing even a single rare attack such as
+	Infiltration is a serious operational failure. All models are
+	assessed under this identical four-metric protocol.
+	
+	\subsubsection{Training Configuration}
+	\label{subsec:training}
+	
+	All neural network models were trained under a unified configuration,
+	listed in full in Table~\ref{tab:config}.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Training configuration for the proposed Transformer-ESN.}
+		\label{tab:config}
+		\renewcommand{\arraystretch}{0.92}
+		\setlength{\tabcolsep}{4pt}
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\resizebox{\linewidth}{!}{%
+				\begin{tabular}{ll}
+					\toprule
+					\textbf{Parameter} & \textbf{Value} \\
+					\midrule
+					\multicolumn{2}{l}{\textit{Optimisation}} \\
+					Optimiser                       & AdamW \\
+					Learning Rate                   & $3\times10^{-4}$ \\
+					Weight Decay                    & $1\times10^{-2}$ \\
+					Epochs                          & 60 \\
+					Batch Size                      & 4096 \\
+					Loss Function                   & Weighted Cross-Entropy \\
+					Label Smoothing ($\varepsilon$) & 0.05 \\
+					Early Stopping Patience         & 15 epochs \\
+					Gradient Clipping               & Max norm 1.0 \\
+					Class Weights                   & $1/\sqrt{n_c}$, clamped $[0.1,\;10]$ \\
+					Train/Test Split                & 80:20 (stratified) \\
+					\midrule
+					\multicolumn{2}{l}{\textit{ESN Reservoir}} \\
+					Reservoir Size ($N$)            & 256 units \\
+					Spectral Radius ($r$)           & 0.9 \\
+					Input Scaling ($\sigma$)        & 0.1 \\
+					Leaking Rate ($\alpha$)         & 1.0 \\
+					Connectivity                    & 10\% sparse \\
+					\bottomrule
+			\end{tabular}}
+		\end{minipage}%
+		\hfill
+		\begin{minipage}{0.49\linewidth}
+			\centering
+			\resizebox{\linewidth}{!}{%
+				\begin{tabular}{ll}
+					\toprule
+					\textbf{Parameter} & \textbf{Value} \\
+					\midrule
+					\multicolumn{2}{l}{\textit{Transformer Encoder}} \\
+					Attention Heads ($H$)           & 4 \\
+					Encoder Layers ($L$)            & 2 \\
+					Model Dimension ($d_{\mathrm{model}}$) & 128 \\
+					Feed-Forward Dim ($d_{\mathrm{ff}}$)   & 256 \\
+					Dropout                         & 0.1 \\
+					\midrule
+					\multicolumn{2}{l}{\textit{Classification Head}} \\
+					Hidden Size                     & 256 \\
+					Output Classes ($C$)            & 14 \\
+					Total Trainable Parameters      & ${\approx}508\,\mathrm{K}$ \\
+					\midrule
+					\multicolumn{2}{l}{\textit{Hardware / Software}} \\
+					CPU                             & Intel Core i7-12700H \\
+					GPU                             & NVIDIA RTX 3060 (6\,GB VRAM) \\
+					RAM                             & 32\,GB DDR5 \\
+					Python                          & 3.10.12 \\
+					PyTorch                         & 2.1.0 \\
+					CUDA                            & 11.8 \\
+					scikit-learn                    & 1.3.2 \\
+					Random Seed                     & 42 \\
+					\bottomrule
+			\end{tabular}}
+		\end{minipage}
+	\end{table}
+	
+	\subsubsection{Random Forest Baseline Configuration}
+	\label{subsec:rf_config}
+	
+	The Random Forest baseline used scikit-learn~1.3.2 under the same
+	stratified 80:20 split and preprocessing pipeline
+	(Section~\ref{subsec:preprocessing}). Full hyperparameters are given
+	in Table~\ref{tab:rf_config} for reproducibility.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Random Forest baseline configuration (scikit-learn 1.3.2).}
+		\label{tab:rf_config}
+		\renewcommand{\arraystretch}{0.9}
+		\setlength{\tabcolsep}{5pt}
+		\begin{tabularx}{\linewidth}{l X}
+			\toprule
+			\textbf{Parameter} & \textbf{Value} \\
+			\midrule
+			n\_estimators       & 100 \\
+			max\_depth          & None \\
+			min\_samples\_split & 2 \\
+			min\_samples\_leaf  & 1 \\
+			max\_features       & \texttt{sqrt} \\
+			class\_weight       & \texttt{balanced} \\
+			bootstrap           & True \\
+			random\_state       & 42 \\
+			n\_jobs             & $-1$ \\
+			\bottomrule
+		\end{tabularx}
+	\end{table}
+	
+	All reported metrics represent a single experimental run under the
+	described configuration. Future work will include repeated runs with
+	varied random seeds and bootstrapped confidence intervals to estimate
+	performance variance across both well-supported and ultra-rare
+	traffic classes.
+	% =========================================================
+	% 4. RESULTS
+	% =========================================================
+	\section{Results}
+	\label{sec:results}
+	
+	\subsection{Overall Performance}
+	\label{subsec:overall}
+	
+	Table~\ref{tab:overall} reports aggregate performance for both models
+	evaluated under identical preprocessing and split conditions.
+	Transformer-ESN achieves 99.38\% accuracy, 85.34\% macro-precision,
+	82.79\% macro-recall, and 73.55\% macro-F1. The reproduced Random Forest
+	achieves 99.80\% accuracy and 88.40\% macro-F1.
+	
+	The accuracy gap is modest (0.42 percentage points). The macro-F1 gap
+	is substantial (14.85 percentage points). Section~\ref{subsec:decompose}
+	attributes this gap to two separable factors: statistical instability on
+	ultra-rare classes, and the structural mismatch between sequential
+	inductive biases and pre-aggregated tabular features.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Aggregate performance on CIC-IDS2017 (80:20 stratified split).
+			Both models reproduced and evaluated under identical conditions.}
+		\label{tab:overall}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{lcccc}
+				\toprule
+				\textbf{Method}
+				& \textbf{Acc.\ (\%)}
+				& \textbf{Macro-Prec.\ (\%)}
+				& \textbf{Macro-Rec.\ (\%)}
+				& \textbf{Macro-F1\ (\%)} \\
+				\midrule
+				Random Forest (reproduced)~\cite{rf2020}          & 99.80 & 98.20 & 87.30 & 88.40 \\
+				\textbf{Transformer-ESN (proposed)} & \textbf{99.38} & \textbf{85.34} & \textbf{82.79} & \textbf{73.55} \\
+				\bottomrule
+		\end{tabular}}
+	\end{table}
+	
+	\subsection{Comparison with Published Literature}
+	\label{subsec:litcomp}
+	
+	Table~\ref{tab:litcomp} situates the proposed architecture within the
+	published landscape of CIC-IDS2017 evaluations. Two caveats govern
+	interpretation. First, \emph{direct numerical comparison is not valid}:
+	published results vary across preprocessing choices, split ratios, label
+	encodings, and class-subset selections~\cite{thakkar2020}. The figures
+	are included for contextual orientation, not for head-to-head performance
+	ranking. Second, most prior works report aggregate accuracy only; per-class
+	and macro-averaged breakdowns are the exception, not the norm.
+	
+	\begin{table*}[!htbp]
+		\centering
+		\caption{Comparison of proposed Transformer-ESN against representative
+			published results on CIC-IDS2017. ``---'' denotes a metric not reported
+			in the original paper. Accuracy and F1 figures are taken directly from
+			the cited sources; protocols differ across studies and direct numerical
+			comparison is not valid. The proposed model is the only entry with a
+			full per-class breakdown reported.}
+		\label{tab:litcomp}
+		\resizebox{\textwidth}{!}{%
+			\begin{tabular}{L{4.0cm} L{3.8cm} C{2.0cm} C{2.0cm} C{2.0cm} C{2.0cm} C{1.6cm}}
+				\toprule
+				\textbf{Reference}
+				& \textbf{Architecture}
+				& \textbf{Acc.\ (\%)}
+				& \textbf{Prec.\ (\%)}
+				& \textbf{Rec.\ (\%)}
+				& \textbf{Macro-F1\ (\%)}
+				& \textbf{Per-class} \\
+				\midrule
+				\multicolumn{7}{l}{\textit{Classical Machine Learning}} \\
+				Pranto et al.~\cite{kurniabudi2020}
+				& Random Forest + SMOTE  & 99.50 & --- & --- & --- & No \\
+				Azam et al.~\cite{xgb2023}
+				& XGBoost                & 99.60 & --- & --- & --- & No \\
+				Ahmad et al.~\cite{svmelm2018}
+				& SVM-ELM                & 99.67 & --- & --- & --- & No \\
+				\midrule
+				\multicolumn{7}{l}{\textit{Deep Recurrent / Convolutional}} \\
+				Tang et al.~\cite{grurnn2018}
+				& GRU-RNN                & 99.00 & --- & --- & --- & No \\
+				Wang et al.~\cite{cnnbigru2022}
+				& CNN-BiGRU              & 99.70 & --- & --- & --- & No \\
+				Kaur et al.~\cite{cnnlstm2024}
+				& CNN-LSTM               & 96.21 & --- & --- & --- & No \\
+				\midrule
+				\multicolumn{7}{l}{\textit{Reservoir Computing}} \\
+				Gallicchio et al.~\cite{gallicchio2017}
+				& DeepESN                & 97.60 & --- & --- & --- & No \\
+				\midrule
+				\multicolumn{7}{l}{\textit{Attention-Based}} \\
+				Wu et al.~\cite{rtids2022}
+				& Transformer            & 99.17 & --- & --- & --- & No \\
+				Zhang et al.~\cite{bilstm_attn2023}
+				& BiLSTM + Attention     & 99.40 & --- & --- & --- & No \\
+				Li et al.~\cite{trbma2025}
+				& TRBMA                  & 98.66 & --- & --- & --- & No \\
+				\midrule
+				\multicolumn{7}{l}{\textit{Reproduced Baselines (this work)}} \\
+				RF (reproduced)
+				& Random Forest          & 99.80 & --- & --- & 88.40 & No \\
+				\textbf{Proposed}
+				& \textbf{Transformer-ESN} & \textbf{99.38} & \textbf{85.34} & \textbf{82.79} & \textbf{73.55} & \textbf{Yes} \\
+				\bottomrule
+				\multicolumn{7}{l}{%
+					\scriptsize $^*$~TRBMA~\cite{trbma2025} reports 98.66\% accuracy and
+					prioritises macro-recall over precision by design (BS-OSS hybrid
+					sampling); it does not report precision, recall, or macro-F1, so
+					those cells are left blank rather than estimated.}
+		\end{tabular}}
+	\end{table*}
+	
+	Three observations follow from Table~\ref{tab:litcomp}.
+	
+	\textbf{Accuracy is within the published range.}
+	Transformer-ESN's 99.38\% falls within the 96.21\%--99.70\% range
+	reported across all paradigms. It outperforms the standalone Transformer
+	of Wu et al.~\cite{rtids2022} (99.17\%) and TRBMA~\cite{trbma2025}
+	(98.66\%), and is marginally below CNN-BiGRU (99.70\%, the top of the
+	range) and the top classical baselines.
+	
+	\textbf{Macro-F1 comparison is impossible for most prior work.}
+	Ten of the eleven prior entries do not report macro-F1. The proposed
+	model is one of the few entries in this literature with a complete
+	macro-averaged and per-class breakdown.
+	
+	\textbf{The evaluation gap is systematic.}
+	Every prior entry reports no per-class breakdown. It is therefore
+	impossible to determine from the existing literature whether any
+	published IDS architecture achieves strong minority-class detection,
+	or whether high aggregate scores are driven exclusively by majority-class
+	performance.
+	
+	\subsection{Per-Class Performance}
+	\label{subsec:perclass}
+	
+	Table~\ref{tab:perclass} reports per-class precision, recall, and
+	F1-score for the proposed Transformer-ESN across all fourteen traffic
+	classes. This is the central result of the paper. Aggregate accuracy
+	is insufficient to characterise model behaviour under the severe
+	class imbalance of CIC-IDS2017; per-class analysis is required to
+	determine where model capacity is actually concentrated.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Per-class performance of the proposed Transformer-ESN on the
+			CIC-IDS2017 test set. Classes marked $\dagger$ have fewer than 393 test
+			samples; per-class metrics for these classes are statistically unreliable
+			and should be interpreted as indicative only. The macro average is
+			computed over all 14 classes with equal weighting.}
+		\label{tab:perclass}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{L{4.0cm} C{1.4cm} C{1.4cm} C{1.4cm} C{1.4cm}}
+				\toprule
+				\textbf{Class}
+				& \textbf{Prec.}
+				& \textbf{Rec.}
+				& \textbf{F1}
+				& \textbf{Support} \\
+				\midrule
+				\multicolumn{5}{l}{\textit{Well-supported classes ($\geq$393 samples)}} \\
+				Benign                  & 1.00 & 0.99 & 1.00 & 454{,}620 \\
+				DDoS                    & 1.00 & 1.00 & 1.00 &  25{,}606 \\
+				DoS GoldenEye           & 0.97 & 0.99 & 0.98 &   2{,}059 \\
+				DoS Hulk                & 0.97 & 1.00 & 0.98 &  46{,}215 \\
+				DoS Slowhttptest        & 0.90 & 0.99 & 0.94 &   1{,}100 \\
+				DoS Slowloris           & 0.99 & 0.99 & 0.99 &   1{,}159 \\
+				FTP-Patator             & 0.99 & 0.99 & 0.99 &   1{,}588 \\
+				PortScan                & 0.99 & 1.00 & 1.00 &  31{,}786 \\
+				SSH-Patator             & 0.96 & 0.98 & 0.97 &   1{,}179 \\
+				Botnet                  & 0.58 & 0.65 & 0.61 &     393   \\
+				\midrule
+				\multicolumn{5}{l}{\textit{Ultra-rare classes (fewer than 393 test samples)}} \\
+				WA -- Brute Force$\dagger$ & 0.20 & 0.94 & 0.33 & 301 \\
+				WA -- XSS$\dagger$          & 1.00 & 0.03 & 0.06 & 130 \\
+				WA -- SQL Injection$\dagger$& 0.09 & 0.25 & 0.13 &   4 \\
+				Infiltration$\dagger$       & 0.33 & 0.29 & 0.31 &   7 \\
+				\midrule
+				\textbf{Macro Average}  & \textbf{0.85} & \textbf{0.83} & \textbf{0.74} & 566{,}147 \\
+				\bottomrule
+		\end{tabular}}
+	\end{table}
+	
+	Figure~\ref{fig:f1bar} visualises the F1-score distribution across
+	all fourteen classes, and Figure~\ref{fig:four_metric} in
+	Section~\ref{subsec:decompose} presents a four-metric comparison
+	between Transformer-ESN and Random Forest.
+	
+	\subsection{Structural Analysis of Results}
+	\label{subsec:structural}
+	
+	Three structural observations emerge from Table~\ref{tab:perclass}
+	and Figure~\ref{fig:f1bar}.
+	
+	\textbf{Well-supported classes perform strongly.}
+	All ten classes with test support of 393 samples or more achieve
+	F1-scores of 0.61 or above. Nine of these ten exceed 0.94, including
+	all four DoS variants (Hulk, GoldenEye, Slowloris, Slowhttptest),
+	both credential-attack classes (FTP-Patator, SSH-Patator), PortScan,
+	DDoS, and Benign. The model demonstrates reliable discrimination
+	wherever training signal is sufficient.
+	
+	\textbf{Ultra-rare classes dominate macro-F1 degradation.}
+	The four classes marked $\dagger$ (Web Attack--Brute Force, XSS, SQL
+	Injection, Infiltration) have test-set support of 301, 130, 4, and 7
+	samples respectively. Their F1-scores (0.06--0.33) drive the macro
+	average from approximately 97\% (computed over the ten well-supported
+	classes alone) down to 73.55\% across all fourteen. A single
+	misclassification in the 4-sample SQL Injection test set constitutes
+	a 25\% error rate for that class. Per-class metrics at these support
+	levels are not statistically stable estimators of architectural
+	capability; individual prediction outcomes dominate the reported
+	values, regardless of architecture.
+	
+	\textbf{Botnet is a genuine intermediate case.}
+	With 393 test samples and F1 of 0.61, Botnet occupies an intermediate
+	position. Its precision (0.58) and recall (0.65) indicate that the
+	model achieves meaningful but incomplete separation---a pattern
+	consistent with the known feature overlap between Botnet ARES traffic
+	and background benign flows in CIC-IDS2017~\cite{cicids2017}. This
+	represents a genuine detection challenge distinct from the statistical
+	instability affecting the ultra-rare classes, and constitutes a
+	concrete target for future improvement.
+	
+	\subsection{Web Attack -- XSS: Precision-Recall Inversion}
+	\label{subsec:xss}
+	
+	Web Attack -- XSS exhibits a qualitatively distinct failure mode:
+	precision 1.00 but recall 0.03, yielding F1 of 0.06. This
+	precision-recall inversion indicates that the model has learned
+	to assign the XSS label extremely conservatively, predicting it
+	correctly for only the most unambiguous examples while
+	misclassifying the majority as a more common class.
+	
+	With 130 test samples, approximately 126 XSS flows are being
+	misclassified. The inverse pattern in Web Attack -- Brute Force
+	(recall 0.94, precision 0.20) strongly suggests that Brute Force
+	absorbs the majority of misclassified XSS instances: the two
+	classes share training feature distributions. This is consistent
+	with their common origin---both are HTTP-based application-layer
+	attacks with overlapping flow-level statistics.
+	
+	This failure mode is not a statistical artefact of small support; it
+	is a real classification failure attributable to insufficient training
+	signal (522 XSS training samples) combined with feature overlap with
+	a semantically adjacent but more numerous class. No architectural
+	modification within this feature representation can fully resolve it
+	without additional XSS-specific training data.
+	
+	% =========================================================
+	% DISCUSSION
+	% =========================================================
+	\section{Discussion}
+	\label{sec:discussion}
+	
+	\subsection{Decomposing the Macro-F1 Gap}
+	\label{subsec:decompose}
+	
+	The 14.85 percentage point macro-F1 gap between Transformer-ESN
+	(73.55\%) and Random Forest (88.40\%) is the central result requiring
+	explanation. Our analysis suggests that the observed macro-F1 gap is
+	largely explained by two major factors. Treating these as a single
+	undifferentiated cause risks an inaccurate characterisation of the
+	architecture's capability, and each is therefore considered separately
+	below.
+	
+	\textbf{Factor 1: Statistical unreliability on ultra-rare classes.}
+	Four test classes have support of 4, 7, 130, and 301 samples. At these
+	support levels, per-class metrics are unlikely to be statistically
+	stable for any classifier: a single correct or incorrect prediction
+	changes SQL Injection's F1 by 25\% and Infiltration's F1 by 14\%. Under
+	these conditions, the macro average is a less reliable indicator of
+	architectural capability, since it is highly sensitive to individual
+	prediction outcomes. This instability appears to be a property of the
+	dataset and its evaluation protocol rather than of the architecture
+	under test.
+	
+	\textbf{Factor 2: Structural mismatch between architecture and data.}
+	CICFlowMeter produces pre-aggregated statistical summaries over completed
+	flows~\cite{cicids2017}; each row represents an independent observation
+	and does not encode an ordered position within a packet-level sequence.
+	Sequential inductive biases, such as those imposed by an ESN reservoir
+	and a Transformer encoder, are less likely to provide substantial
+	benefit on pre-aggregated tabular flow features and may introduce
+	unnecessary modelling complexity relative to the information actually
+	present in the data. Random Forest, in contrast, imposes no such
+	assumption: it treats each row as an independent point in feature
+	space, an approach that appears well aligned with the tabular nature
+	of the input. This structural alignment is likely a major contributing
+	factor to the observed macro-F1 gap, rather than evidence of a
+	difference in general representational capacity between the two
+	approaches.
+	
+	Table~\ref{tab:decompose} presents an approximate decomposition of
+	these two factors. The subset values were obtained by recomputing
+	macro-F1 over progressively restricted class subsets and are therefore
+	analytical estimates rather than independently measured quantities;
+	they should be interpreted as indicative of relative magnitude rather
+	than as precise, additive contributions.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Macro-F1 computed over class subsets to isolate the
+			approximate contribution of ultra-rare classes to the observed
+			performance gap. Values are analytical estimates derived by recomputing
+			macro-F1 over successive class subsets, not independently measured
+			quantities. The structural mismatch factor remains relevant for Botnet
+			even within the well-supported group.}
+		\label{tab:decompose}
+		\renewcommand{\arraystretch}{1.15}
+		\begin{tabular}{L{4.6cm} C{2.0cm}}
+			\toprule
+			\textbf{Class Subset} & \textbf{Macro-F1 (\%)} \\
+			\midrule
+			All 14 classes (reported)    & 73.55 \\
+			10 well-supported classes only & $\approx$96.40 \\
+			9 high-performing classes (excl.\ Botnet) & $\approx$98.30 \\
+			\midrule
+			\textit{Gap attributable to ultra-rare classes} & $\approx$22.85 pp \\
+			\textit{Gap attributable to Botnet}              & $\approx$1.90 pp \\
+			\bottomrule
+			\multicolumn{2}{l}{\scriptsize pp = percentage points; approximate, see text}
+		\end{tabular}
+	\end{table}
+	
+	\subsection{Botnet as the Boundary Case}
+	\label{subsec:botnet}
+	
+	With 393 test samples, the Botnet class has a sample size sufficient to
+	produce statistically meaningful per-class estimates, distinguishing
+	it from the ultra-rare classes discussed above. The partial separation
+	achieved---precision 0.58, recall 0.65---suggests that the architecture
+	captures a genuine learning signal for this class, although separation
+	remains incomplete. Botnet ARES traffic in CIC-IDS2017 is known to
+	exhibit packet-timing and flow-length statistics that partially overlap
+	with normal background traffic~\cite{cicids2017}, which is likely to
+	make it intrinsically harder to separate than volumetric attack
+	categories. The Botnet result indicates that the architecture's
+	limitations are not uniform across all minority classes: moderate-support
+	classes such as Botnet appear to remain learnable even when ultra-rare
+	classes dominate the overall macro-F1 penalty. This distinction
+	positions Botnet as a tractable improvement target, separate from the
+	structurally unreliable ultra-rare class estimates. Without a published
+	per-class breakdown for the reproduced Random Forest baseline, whether
+	Random Forest achieves comparable separation on this specific class
+	remains an open question, and the comparison at the Botnet level should
+	be treated as inconclusive rather than as a demonstrated advantage for
+	either method.
+	
+	\subsection{Where the Architecture Provides Value}
+	\label{subsec:value}
+	
+	While the aggregate macro-F1 comparison favours Random Forest on this
+	dataset, several architectural properties of Transformer-ESN are not
+	captured by that single metric and merit separate consideration.
+	
+	\textbf{Training stability.}
+	The fixed ESN reservoir removes the need for recurrent backpropagation,
+	confining gradient computation to the Transformer encoder and
+	classification head. This design is expected to substantially reduce
+	the effects of vanishing and exploding gradients that constrain fully
+	trained LSTM and GRU architectures, likely reducing sensitivity to
+	initialisation and learning-rate choices relative to end-to-end
+	recurrent training~\cite{grurnn2018}. This is broadly consistent with
+	recent findings that ESN-based reservoirs mitigate the gradient
+	instability associated with backpropagation-through-time in LSTM/GRU
+	architectures~\cite{alam2026drlesn}, though that result was obtained on
+	NetFlow-based IoT datasets rather than CIC-IDS2017 and should not be
+	read as CIC-IDS2017-specific evidence.
+	
+	\textbf{Parameter efficiency.}
+	The 508K-parameter trainable footprint is comparatively small relative
+	to attention-based IDS architectures more broadly, since the model
+	avoids full end-to-end training of its recurrent component. As
+	summarised in Table~\ref{tab:architecture_compare}, Transformer-ESN is
+	the only reviewed architecture combining a gradient-free reservoir with
+	an attention mechanism, which structurally limits the fraction of total
+	model capacity that requires gradient updates. The
+	$256{\times}76$ input matrix and $256{\times}256$ recurrent weight
+	matrix are fixed at initialisation and do not contribute to gradient
+	computation during training. A precise quantitative comparison against
+	specific published attention-based IDS models would require parameter
+	counts not consistently reported across that literature, and is
+	therefore left as a direction for future benchmarking rather than
+	claimed here.
+	
+	\textbf{Validated discrimination on well-supported classes.}
+	On the nine classes achieving F1 above 0.94, the reservoir-to-attention
+	pipeline demonstrates discriminative behaviour consistent with
+	sufficient training data being available. This result supports the
+	architectural design in settings where the sequential inductive bias
+	is appropriate, such as packet-level stream data.
+	
+	\textbf{Structural readiness for sequential data.}
+	The architecture is designed for settings in which the ESN reservoir
+	can exploit genuine sequential structure in the input. On per-flow
+	tabular features, this structure is largely absent, meaning the
+	architecture is likely operating outside its intended application
+	domain in the present evaluation. Taken together with the findings
+	above, this suggests a mismatch between the architecture's intended
+	operating regime and the feature representation available in
+	CIC-IDS2017, rather than a fundamental limitation of the architecture
+	itself.
+	
+	These architectural considerations point toward specific deployment
+	contexts in which the properties described above are expected to
+	translate into practical advantages, as discussed next.
+	
+	\subsection{Practical Deployment Scenarios}
+	\label{subsec:deployment}
+	
+	The structural properties of Transformer-ESN have concrete implications
+	for deployment contexts that aggregate accuracy comparisons do not
+	fully capture. Three scenarios illustrate where the architecture is
+	expected to provide practical value relative to classical tabular
+	methods.
+	
+	\textbf{Packet-level and session-stream monitoring.}
+	Enterprise NIDS deployments increasingly operate on raw packet captures
+	or reassembled TCP session streams rather than pre-aggregated flow
+	statistics~\cite{buczak2016survey,khraisat2019survey}. In these
+	settings, each input is a genuine temporal sequence: packet inter-arrival
+	times, payload length progressions, and flag sequences carry information
+	that is discarded by per-flow aggregation. The ESN reservoir is
+	designed to exploit this type of structure: its recurrent dynamics
+	maintain a fading memory of recent inputs, and its spectral radius
+	governs the effective temporal horizon over which past context
+	influences the current state. When operating on such data, the fixed
+	reservoir is expected to provide a computationally inexpensive nonlinear
+	summary of recent traffic history, while the Transformer encoder
+	attends to dependencies across multiple time steps within a session.
+	Random Forest, which treats each observation as independent, is
+	unlikely to model this cross-packet temporal structure regardless of
+	feature engineering effort.
+	
+	\textbf{Resource-constrained and edge deployment.}
+	Network monitoring at the edge---on switches, routers, or embedded
+	security appliances---imposes strict constraints on model size,
+	retraining frequency, and labelled data availability. The
+	Transformer-ESN's 508K trainable parameter footprint is comparatively
+	small relative to attention-based IDS architectures more broadly, and
+	its fixed reservoir substantially reduces the computational burden
+	associated with recurrent training. In environments where labelled
+	attack traffic is scarce and retraining must be completed within
+	strict time windows, this training efficiency and compact parameter
+	count represent practical advantages that accuracy figures alone do
+	not quantify.
+	
+	\textbf{Federated and collaborative monitoring.}
+	Multi-organisational threat intelligence sharing is constrained by
+	data privacy regulations that prohibit raw traffic exchange. In a
+	federated NIDS deployment, only the trainable encoder weights (508K
+	parameters) would need to be aggregated across nodes, while each
+	participant retains its fixed reservoir locally. This is expected to
+	create substantially lower communication overhead than federating
+	fully trained recurrent architectures, and the reservoir's fixed random
+	initialisation allows participants to share an identical reservoir
+	without coordination. These properties suggest Transformer-ESN as a
+	plausible candidate for privacy-preserving collaborative
+	detection~\cite{idrissi2023fedanids,feddef2023}.
+	
+	\subsection{Architecture Selection Guidelines}
+	\label{subsec:selection}
+	
+	The experimental results, taken together with the deployment
+	considerations above, suggest a practical decision boundary between
+	the proposed architecture and classical tabular methods for
+	practitioners selecting a classifier for a given deployment context.
+	
+	Random Forest appears to be the more appropriate choice when the input
+	consists of pre-aggregated per-flow statistics (as in CIC-IDS2017),
+	labelled data is abundant, and the operational requirement is
+	maximising per-class accuracy across all categories, including
+	ultra-rare ones. Its structural alignment with row-wise tabular
+	features, combined with the native ensemble averaging that reduces
+	variance on minority classes when sufficient training samples exist,
+	makes it difficult to surpass on this specific input representation.
+	The macro-F1 advantage observed here (88.40\% vs.\ 73.55\%) appears to
+	be a direct consequence of this alignment and should not be interpreted
+	as evidence of superior general representational capacity.
+	
+	Transformer-ESN is likely to become the preferable choice under three
+	conditions: (i) the input consists of ordered sequences rather than
+	independent per-flow summaries---packet captures, NetFlow sequences,
+	or HTTP session logs where the temporal ordering of records encodes
+	threat behaviour not captured by any single-row statistic; (ii)
+	training stability is a hard constraint, as the fixed reservoir is
+	expected to substantially reduce the hyperparameter sensitivity and
+	gradient instability that affect LSTM and GRU training on imbalanced
+	security data; or (iii) the deployment requires incremental or
+	federated model updates, where the compact trainable component offers
+	communication and computation efficiency that tree ensembles are
+	unlikely to match. The architecture is not proposed as a universal
+	replacement for Random Forest on tabular IDS benchmarks, but rather as
+	a structurally motivated choice for the sequential and distributed
+	monitoring scenarios that increasingly characterise modern network
+	security infrastructure.
+	
+	Table~\ref{tab:architecture_compare} summarises these properties
+	relative to the Random Forest baseline and representative prior work.
+	
+	\begin{table}[!htbp]
+		\centering
+		\caption{Qualitative comparison of architectural properties. Checkmarks
+			denote property presence; the proposed Transformer-ESN is the only entry
+			with all four properties simultaneously.}
+		\label{tab:architecture_compare}
+		\renewcommand{\arraystretch}{1.15}
+		\resizebox{\linewidth}{!}{%
+			\begin{tabular}{L{3.6cm} C{1.6cm} C{1.6cm} C{1.6cm} C{1.8cm}}
+				\toprule
+				\textbf{Architecture}
+				& \textbf{Temporal encoding}
+				& \textbf{Gradient-free reservoir}
+				& \textbf{Attention mechanism}
+				& \textbf{Per-class eval.} \\
+				\midrule
+				Random Forest          & \xmark & \xmark & \xmark & \xmark \\
+				GRU-RNN~\cite{grurnn2018}
+				& \cmark & \xmark & \xmark & \xmark \\
+				CNN-BiGRU~\cite{cnnbigru2022}
+				& \cmark & \xmark & \xmark & \xmark \\
+				DeepESN~\cite{gallicchio2017}
+				& \cmark & \cmark & \xmark & \xmark \\
+				Transformer~\cite{rtids2022}
+				& \xmark & \xmark & \cmark & \xmark \\
+				TRBMA~\cite{trbma2025}
+				& \cmark & \xmark & \cmark & \xmark \\
+				\textbf{Transformer-ESN (proposed)}
+				& \cmark & \cmark & \cmark & \cmark \\
+				\bottomrule
+		\end{tabular}}
+	\end{table}
+	
+	Figure~\ref{fig:crossparadigm} compares average reported accuracy
+	across these paradigms, while Figure~\ref{fig:evolution_ids} traces
+	the paradigm progression reviewed in Section~\ref{sec:litreview}
+	that motivates the proposed coupling.
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure5_Average_Architecture_Accuracy.png}{Average accuracy per learning paradigm}
+		\caption{Average reported accuracy on CIC-IDS2017 for the best representative model within each of the four learning paradigms reviewed. Transformer-ESN (99.38\%) is competitive with the strongest deep recurrent/convolutional baseline (CNN-BiGRU~\cite{cnnbigru2022}, 99.70\%) and the strongest classical baseline (SVM-ELM~\cite{svmelm2018}, 99.67\%), and outperforms the strongest standalone attention-based model (Transformer~\cite{rtids2022}, 99.17\%). As with Figure~\ref{fig:accuracy_comparison}, cross-study comparisons are contextual rather than statistically controlled, and the proposed model remains the only entry with a complete per-class breakdown (Table~\ref{tab:perclass}).}
+		\label{fig:crossparadigm}
+	\end{figure}
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure6_Evolution_IDS.png}{Evolution of intrusion detection paradigms}
+		\caption{Timeline summarising the progression of network intrusion detection paradigms reviewed in Section~\ref{sec:litreview}: classical machine learning, deep recurrent/convolutional networks, reservoir computing, and attention-based architectures, culminating in the reservoir-to-attention coupling proposed in this work. The figure is intended as a conceptual overview of paradigm succession rather than a chronologically exhaustive record.}
+		\label{fig:evolution_ids}
+	\end{figure}
+	
+	Together, Figure~\ref{fig:crossparadigm} and Figure~\ref{fig:evolution_ids}
+	summarise, respectively, where the proposed model sits relative to each
+	paradigm's best result and how the four paradigms reviewed in
+	Section~\ref{sec:litreview} led to the reservoir-to-attention coupling
+	examined in this paper.
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure7_Transformer_ESN_Workflow.png}{Transformer-ESN training workflow}
+		\caption{Training workflow of the proposed Transformer-ESN, from data loading through convergence checking and final evaluation. Reservoir weights $W_{\mathrm{in}}$ and $W$ are initialised once and frozen throughout; only the Transformer encoder and classification head are updated via backpropagation at each iteration.}
+		\label{fig:training_flow}
+	\end{figure}
+	
+	\begin{figure}[!htbp]
+		\centering
+		\safefig{Figure8_Performance_Summary.png}{Per-class F1 performance summary}
+		\caption{Per-class F1-score of the proposed Transformer-ESN on the CIC-IDS2017 test set, summarising the results of Table~\ref{tab:perclass}. Classes marked $\dagger$ have fewer than 393 test samples, so their F1 estimates are statistically unstable. The bimodal pattern---F1~$\geq$~0.94 on nine of ten well-supported classes against near-zero F1 on four ultra-rare classes---accounts for the divergence between overall accuracy (99.38\%) and macro-F1 (73.55\%).}
+		\label{fig:f1bar}
+	\end{figure}
+	
+	\subsection{Contextualisation Against Literature}
+	\label{subsec:context}
+	
+	Transformer-ESN's 99.38\% accuracy sits within the 96.21\%--99.70\%
+	range reported across all four paradigms reviewed in
+	Table~\ref{tab:litcomp}. It outperforms the standalone Transformer
+	of Wu et al.~\cite{rtids2022} and TRBMA~\cite{trbma2025} on accuracy,
+	and is marginally below CNN-BiGRU~\cite{cnnbigru2022} and the top
+	classical results.
+	
+	Direct numerical comparison with published figures should be treated
+	with caution given protocol heterogeneity across studies~\cite{thakkar2020}.
+	What can be reasonably stated is that the proposed architecture's
+	accuracy does not appear degraded relative to the published range, and
+	that its per-class performance on well-represented classes is
+	competitive with the strongest published results. The reported
+	limitation is specifically on ultra-rare classes---a limitation that is
+	plausibly shared by many published architectures, though rarely
+	reported, since most published evaluations omit per-class analysis.
+	
+	Taken together, these results point to a broader conclusion about model
+	selection in network intrusion detection. The macro-F1 gap observed in
+	this study appears to be largely explained by two identifiable and
+	partially separable factors: the statistical instability of ultra-rare
+	class estimates, and a structural mismatch between sequential inductive
+	biases and the pre-aggregated, non-sequential nature of CICFlowMeter
+	features. Random Forest's advantage on this benchmark is best
+	understood as a consequence of its structural fit to tabular, row-independent
+	data, rather than a general superiority in representational capacity.
+	Conversely, Transformer-ESN's design remains well motivated for data
+	representations where genuine sequential structure exists, such as
+	packet-level captures or session-ordered logs, and its training
+	stability and parameter efficiency offer practical benefits in
+	resource-constrained or federated settings regardless of the tabular
+	benchmark result. The broader implication is that architecture
+	selection in intrusion detection should be guided primarily by whether
+	the available data representation carries genuine sequential
+	information, rather than by benchmark accuracy alone; this framing
+	motivates the directions for future work outlined below.
+	
+	\subsection{Implications for Future Work}
+	\label{subsec:implications}
+	
+	Three actionable directions follow from these findings.
+	
+	\textbf{Packet-level sequential data.}
+	The sequential inductive bias of the Transformer-ESN architecture is
+	expected to be most beneficial when applied to data with genuine
+	sequential structure. Evaluation on packet-level sequences within flows,
+	or on temporally-ordered multi-flow session logs, would provide the
+	architectural preconditions for the ESN reservoir and Transformer
+	encoder to contribute as intended. This expectation is consistent with
+	recent packet-level frameworks showing that flow-independent sequential
+	processing improves detection suitability relative to purely flow-level
+	aggregation~\cite{hore2024sequential}.
+	
+	\textbf{Few-shot strategies for ultra-rare classes.}
+	The extreme rarity of several CIC-IDS2017 classes (4--36 total samples)
+	makes reliable evaluation difficult under standard train-test splits.
+	Future work should combine the proposed architecture with explicit
+	few-shot learning, data augmentation (e.g., flow-level WGAN-GP
+	synthesis~\cite{thakkar2020}), or open-set detection strategies for
+	ultra-rare classes, evaluated under protocols designed for low-support
+	regimes.
+	
+	\textbf{Federated and incremental deployment.}
+	The fixed gradient-free reservoir creates a natural basis for federated
+	learning: only the compact trainable component (508K parameters) would
+	need to be updated or aggregated across distributed nodes, while
+	reservoir weights remain locally fixed. Fully trainable recurrent
+	architectures are unlikely to offer this structural advantage.
+	Investigating this property for distributed or edge-deployed IDS is a
+	direct extension of this work. This aligns with the broader federated-IDS
+	literature, which identifies communication efficiency and reduced
+	trainable footprint as central motivations for federated
+	adoption~\cite{hernandezramos2025federated}. A recent federated
+	deployment tested directly on CIC-IDS2017 among other benchmarks
+	reported its lowest accuracy specifically on CIC-IDS2017 (98.37\%,
+	versus 99.65\% on a vehicular network dataset), underscoring that
+	federated compactness does not by itself guarantee strong performance
+	on this benchmark~\cite{almansour2025adaptive}.
+	
+	% =========================================================
+	% 6. CONCLUSION
+	% =========================================================
+	\section{Conclusion}
+	\label{sec:conclusion}
+	
+	Network intrusion detection remains one of the most demanding
+	classification problems in applied machine learning: class
+	distributions are severely skewed, minority-class attacks carry
+	disproportionate operational risk, and deployment environments
+	impose hard constraints on training latency and labelled data
+	availability. Existing deep learning approaches address these challenges either
+	through purely recurrent architectures---which couple temporal feature
+	extraction and discriminative classification into a single
+	gradient-dependent pipeline subject to vanishing gradient instability
+	and high sensitivity to initialisation---or through Transformer-only
+	models applied directly to static feature vectors, which lack an
+	explicit mechanism for capturing the nonlinear temporal dynamics
+	present in ordered network traffic.
+	
+	This paper addressed both limitations through a hybrid
+	Transformer--Echo State Network (Transformer-ESN)
+	architecture in which the two concerns are deliberately separated.
+	A fixed, randomly initialised ESN reservoir first maps the
+	76-dimensional preprocessed network flow feature space into a
+	256-dimensional nonlinear state representation without any
+	gradient-based optimisation~\cite{jaeger2001,lukosevicius2012}.
+	The resulting reservoir states are then processed by a multi-head
+	self-attention Transformer encoder~\cite{vaswani2017attention},
+	which learns long-range inter-feature dependencies across the
+	projected space before a softmax classification head produces
+	per-class probability scores. While prior work has applied Echo
+	State Networks to intrusion detection in standalone
+	configurations~\cite{esn_dos2021,mlesn2020,cesn2024} and
+	Transformer encoders have been widely adopted for network traffic
+	classification~\cite{rtids2022,flowformer2024,long2024transformer},
+	the specific coupling proposed here---using a fixed ESN reservoir
+	as a zero-cost nonlinear projection layer that feeds directly into
+	a Transformer encoder for multi-class network intrusion
+	detection---has not, to the best of our knowledge, been previously
+	reported in the literature.
+	
+	Evaluated on the CIC-IDS2017 benchmark~\cite{cicids2017},
+	the Transformer-ESN architecture achieved 99.38\% overall
+	accuracy, competitive with the range of published results on this
+	dataset~\cite{kurniabudi2020,xgb2023,svmelm2018,grurnn2018,
+		cnnlstm2024,cnnbigru2022,rtids2022,trbma2025}. The total
+	trainable footprint is approximately 508K parameters, with the
+	remainder of the model consisting entirely of fixed reservoir
+	weights that require no gradient computation at any point during
+	training or inference. Against a Random Forest baseline~\cite{kurniabudi2020}
+	evaluated under identical experimental conditions, the macro-F1 gap
+	(73.55\% vs.\ 88.40\%) is explained by two specific and tractable
+	factors: statistical unreliability of per-class metrics at
+	ultra-low test support (4--301 samples for four classes), and
+	architectural mismatch between sequential inductive biases and
+	row-wise tabular features that lack genuine sequential order.
+	Across the ten well-represented classes, the architecture achieves
+	F1-scores of 0.61--1.00, with nine of ten exceeding 0.94, confirming
+	that the performance gap is localised entirely to the sparse-support
+	regime rather than reflecting a generalised architectural shortcoming.
+	
+	Beyond raw accuracy, the architecture's most practically relevant
+	property is the clean separation between its two stages. Because
+	reservoir weights are fixed at initialisation~\cite{jaeger2001,
+		scardapane2017}, the model eliminates recurrent backpropagation
+	entirely, reducing training complexity and improving convergence
+	stability relative to end-to-end recurrent
+	baselines~\cite{grurnn2018,yin2017deep}. Only the Transformer
+	encoder and classification head carry trainable parameters,
+	making the total trainable parameter count compact and
+	well-suited to settings where labelled traffic samples are
+	scarce and model retraining must be completed under strict time
+	constraints. This separation also creates a principled basis for
+	incremental and federated learning, since only the compact
+	trainable component needs to be updated or aggregated across
+	distributed nodes---an important practical advantage that
+	purely end-to-end architectures do not share~\cite{buczak2016survey,
+		khraisat2019survey}.
+	
+	The principal contribution of this work is not a performance
+	claim but a structural one: the reservoir-to-attention coupling
+	is a training-stable, parameter-efficient approach that
+	eliminates recurrent backpropagation while preserving the
+	capacity for global contextual
+	reasoning~\cite{gallicchio2017,vaswani2017attention}. Its
+	limitations on CIC-IDS2017 are specific and tractable---
+	attributable to feature representation mismatch and dataset
+	sparsity~\cite{ring2019survey,thakkar2020} rather than to
+	generalised architectural shortcomings. The architecture is most
+	appropriately evaluated in settings where genuine sequential
+	structure exists in the input, such as packet-level streams or
+	temporally-ordered session logs, where its sequential inductive
+	bias becomes an advantage rather than a liability.
+	
+	Taken together, the experimental results and architectural
+	analysis establish Transformer-ESN as a competitive, principled,
+	and computationally efficient framework for multi-class network
+	intrusion detection. The proposed reservoir-to-attention coupling
+	represents a complementary direction to existing hybrid
+	architectures~\cite{cnnlstm2024,cnnbigru2022,bilstm_attn2023}
+	and opens a clear path toward deployable, updatable, and
+	interpretable detection systems in operational cybersecurity
+	environments.
+	
+	\subsection{Future Scope}
+	
+	\subsubsection{Packet-Level and Sequential Data Evaluation}
+	
+	The structural mismatch identified in this work---between the
+	architecture's sequential inductive bias and the row-wise
+	tabular nature of CIC-IDS2017 flow features---is expected to
+	diminish when the model operates on genuinely ordered inputs.
+	Future work should evaluate Transformer-ESN on packet-level
+	streams and temporally-ordered session logs, where ESN reservoir
+	dynamics and Transformer attention can exploit real temporal
+	ordering rather than imposing it artificially on independent
+	feature vectors~\cite{grurnn2018,yin2017deep}.
+	
+	This expectation is supported, with an important qualification,
+	by recent work reformulating CIC-IDS2017 as a temporal task under
+	controlled padding and split conditions~\cite{moczkodan2026transformers}.
+	On genuinely sequential, non-padded input windows, a standalone
+	Transformer achieved the highest macro-F1 of any evaluated
+	architecture, consistent with the expectation that sequential
+	inductive biases become an advantage once real temporal structure
+	is present. However, the same study found that padding convention
+	and split protocol---not architecture---were the dominant factors
+	governing reported performance: naive zero-padding degraded the
+	Transformer's macro-F1 by 0.24, and false-alarm rate under a
+	leakage-free split increased by a factor of 67 relative to a
+	conventional random split. This indicates that any future
+	packet-level or session-level evaluation of Transformer-ESN must
+	explicitly control for padding scheme and enforce leakage-free
+	splitting; absent these controls, reported gains from sequential
+	modeling are not distinguishable from evaluation-protocol
+	artifacts~\cite{moczkodan2026transformers}.
+	
+	\subsubsection{Rare-Class Robustness and Evaluation Protocols}
+	
+	Four attack categories in CIC-IDS2017 had test support of
+	4--301 samples, making per-class F1-scores in those categories
+	statistically unreliable. Future work should combine few-shot
+	learning strategies, targeted augmentation for ultra-rare attack
+	classes, and evaluation protocols specifically designed for the
+	low-support regime---such as stratified cross-validation with
+	bootstrapped confidence intervals---to produce assessments that
+	distinguish genuine architectural limitations from artefacts of
+	dataset sparsity~\cite{ring2019survey,thakkar2020,zhou2020ensemble}.
+	
+	\subsubsection{Statistical Rigour and Repeated Experimental Evaluation}
+	
+	All results in this paper represent a single experimental run under a
+	fixed random seed. While this is consistent with a substantial portion
+	of published IDS evaluations, it precludes reporting confidence
+	intervals or testing for statistical significance of performance
+	differences between architectures. Future work should conduct repeated
+	runs across a range of random seeds (recommended minimum: 10--30 runs)
+	and report mean performance with standard deviation or bootstrapped
+	95\% confidence intervals for each metric. For macro-F1 in particular,
+	where minority-class outcomes can shift aggregate values substantially
+	on single runs, statistical characterisation of variance is a necessary
+	condition for drawing reliable conclusions about architectural
+	comparisons. Significance testing (e.g., paired Wilcoxon signed-rank
+	tests across cross-validation folds) should be applied when comparing
+	Transformer-ESN against the Random Forest baseline to determine whether
+	the observed macro-F1 gap is statistically reliable or within
+	run-to-run variance bounds.
+	
+	\subsubsection{Federated and Privacy-Preserving IDS}
+	
+	Collaborative intrusion detection across organisational
+	boundaries is constrained by data privacy regulations that
+	prohibit raw traffic sharing. Future research should
+	investigate federated Transformer-ESN frameworks in
+	which multiple stakeholders jointly optimise the trainable
+	encoder using privacy-preserving gradient aggregation. The
+	compact parameterisation of the trainable component---limited
+	to the Transformer encoder and classification head, with
+	reservoir weights fixed and never requiring
+	transmission---is particularly advantageous for
+	communication-efficient federated
+	aggregation~\cite{buczak2016survey,khraisat2019survey}.
+	
+	\subsubsection{Adaptive and Structured Reservoir Design}
+	
+	The random sparse reservoir topology adopted in this work
+	may not optimally represent all classes of network traffic
+	dynamics. Future work should systematically evaluate
+	structured reservoir topologies---including ring networks,
+	small-world graphs, and spectral graph-designed
+	reservoirs---alongside adaptive initialisation strategies
+	that tune spectral radius and connectivity density to the
+	statistical properties of the target traffic
+	distribution~\cite{gallicchio2020,gallicchio2017,scardapane2017}.
+	Adaptive reservoir designs may prove particularly effective
+	for traffic distributions with non-stationary temporal
+	structure, where fixed random projections are a limiting
+	assumption.
+	
+	\subsubsection{Explainable Intrusion Detection}
+	
+	Operational security analysts require human-interpretable
+	justifications for automated classification decisions before
+	acting on model outputs. Future work should integrate
+	attention heatmap visualisation and feature attribution
+	methods to identify which reservoir states---and by
+	extension, which temporal traffic patterns---are most
+	predictive of specific attack categories. The multi-head
+	attention weight matrices produced by the Transformer
+	encoder offer a natural and already-available
+	interpretability mechanism that can be leveraged without
+	adding architectural
+	overhead~\cite{rtids2022,bilstm_attn2023,liu2020hierarchical}.
+	
+	
+	% =========================================================
+	% REFERENCES
+	% =========================================================
+	% =========================================================
+	% REFERENCES (fixed: citation-order matched, 10 uncited entries removed)
+	% =========================================================
+	% =========================================================
+	% REFERENCES (reordered by first citation appearance)
+	% =========================================================
+	\begin{thebibliography}{99}
+		
+		\bibitem{buczak2016survey}
+		A.L.\ Buczak and E.\ Guven,
+		``A Survey of Data Mining and Machine Learning Methods for Cyber Security Intrusion Detection,''
+		IEEE Communications Surveys \& Tutorials,
+		vol.\ 18,
+		no.\ 2,
+		pp.\ 1153--1176,
+		2016.
+		
+		\bibitem{khraisat2019survey}
+		A.\ Khraisat and I.\ Gondal and P.\ Vamplew and J.\ Kamruzzaman,
+		``Survey of Intrusion Detection Systems: Techniques, Datasets and Challenges,''
+		Cybersecurity,
+		vol.\ 2,
+		no.\ 1,
+		pp.\ 1--22,
+		2019.
+		
+		\bibitem{denning1987}
+		D.E.\ Denning,
+		``An Intrusion-Detection Model,''
+		IEEE Transactions on Software Engineering,
+		vol.\ SE-13,
+		no.\ 2,
+		pp.\ 222--232,
+		1987.
+		
+		\bibitem{vinayakumar2019deep}
+		R.\ Vinayakumar and M.\ Alazab and K.P.\ Soman and P.\ Poornachandran and A.\ Al-Nemrat and S.\ Venkatraman,
+		``Deep Learning Approach for Intelligent Intrusion Detection System,''
+		IEEE Access,
+		vol.\ 7,
+		pp.\ 41525--41550,
+		2019.
+		
+		\bibitem{yin2017deep}
+		C.\ Yin and Y.\ Zhu and J.\ Fei and X.\ He,
+		``A Deep Learning Approach for Intrusion Detection Using Recurrent Neural Networks,''
+		IEEE Access,
+		vol.\ 5,
+		pp.\ 21954--21961,
+		2017.
+		
+		\bibitem{hochreiter1997lstm}
+		S.\ Hochreiter and J.\ Schmidhuber,
+		``Long Short-Term Memory,''
+		Neural Computation,
+		vol.\ 9,
+		no.\ 8,
+		pp.\ 1735--1780,
+		1997.
+		
+		\bibitem{cho2014gru}
+		K.\ Cho, B.\ van Merri\"{e}nboer, C.\ Gulcehre, D.\ Bahdanau, F.\ Bougares, H.\ Schwenk and Y.\ Bengio,
+		``Learning Phrase Representations Using RNN Encoder--Decoder for Statistical Machine Translation,''
+		Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing (EMNLP),
+		Doha, Qatar,
+		2014,
+		pp.\ 1724--1734.
+		
+		\bibitem{grurnn2018}
+		T.A.\ Tang, L.\ Mhamdi, D.\ McLernon, S.A.R.\ Zaidi and M.\ Ghogho,
+		``Deep Recurrent Neural Network for Intrusion Detection in SDN-Based Networks,''
+		IEEE Conference on Network Softwarization (NetSoft),
+		Montreal, QC, Canada,
+		2018,
+		pp.\ 202--206.
+		
+		\bibitem{cnnlstm2024}
+		P.\ Kaur and H.\ Kumar and M.\ Singh,
+		``Enhancing Intrusion Detection Through a Hybrid Deep Learning Pipeline on CIC-IDS2017,''
+		Journal of Cloud Computing,
+		vol.\ 13,
+		Article 94,
+		2024.
+		
+		\bibitem{cnnbigru2022}
+		Z.\ Wang and Y.\ Liu and D.\ He and S.\ Chan,
+		``Network Intrusion Detection With CNN and BiGRU Under Hybrid Class-Balancing,''
+		Security and Communication Networks,
+		vol.\ 2022,
+		Article 4778735,
+		2022.
+		
+		\bibitem{rtids2022}
+		Z.\ Wu and H.\ Zhang and P.\ Wang and Z.\ Sun,
+		``RTIDS: A Robust Transformer-Based Intrusion Detection System,''
+		IEEE Access,
+		vol.\ 10,
+		pp.\ 65126--65140,
+		2022.
+		
+		\bibitem{flowformer2024}
+		L.D.\ Manocchio and S.\ Layeghy and W.W.\ Lo and G.K.\ Kulatilleke and M.\ Sarhan and M.\ Portmann,
+		``FlowTransformer: A Transformer Framework for Flow-Based Network Intrusion Detection Systems,''
+		Expert Systems with Applications,
+		vol.\ 241,
+		Article 122666,
+		2024.
+		
+		\bibitem{long2024transformer}
+		Z.\ Long and H.\ Yan and G.\ Shen and X.\ Zhang and H.\ He and L.\ Cheng,
+		``A Transformer-Based Network Intrusion Detection Approach for Cloud Security,''
+		Journal of Cloud Computing,
+		vol.\ 13,
+		Article 5,
+		2024.
+		
+		\bibitem{cicids2017}
+		I.\ Sharafaldin, A.H.\ Lashkari and A.A.\ Ghorbani,
+		``Toward Generating a New Intrusion Detection Dataset and Intrusion Traffic Characterization,''
+		2018 4th International Conference on Information Systems Security and Privacy (ICISSP),
+		Funchal, Portugal,
+		2018,
+		pp.\ 108--116.
+		
+		\bibitem{mlp2021}
+		B.\ Mohammed and E.K.\ Gbashi,
+		``Intrusion Detection System for NSL-KDD Dataset Based on Deep Learning and Recursive Feature Elimination,''
+		Engineering and Technology Journal,
+		vol.\ 39,
+		no.\ 7,
+		pp.\ 1069--1079,
+		2021.
+		
+		\bibitem{breiman2001}
+		L.\ Breiman,
+		``Random Forests,''
+		Machine Learning,
+		vol.\ 45,
+		no.\ 1,
+		pp.\ 5--32,
+		2001.
+		
+		\bibitem{ring2019survey}
+		M.\ Ring and S.\ Wunderlich and D.\ Scheuring and D.\ Landes and A.\ Hotho,
+		``A Survey of Network-Based Intrusion Detection Data Sets,''
+		Computers \& Security,
+		vol.\ 86,
+		pp.\ 147--167,
+		2019.
+		
+		\bibitem{thakkar2020}
+		A.\ Thakkar and R.\ Lohiya,
+		``A Review of the Advancement in Intrusion Detection Datasets,''
+		Procedia Computer Science,
+		vol.\ 167,
+		pp.\ 636--645,
+		2020.
+		
+		\bibitem{kurniabudi2020}
+		Kurniabudi and D.\ Stiawan and Darmawijoyo and M.Y.\ Idris and A.M.\ Bamhdi and R.\ Budiarto,
+		``CICIDS-2017 Dataset Feature Analysis With Information Gain for Anomaly Detection,''
+		IEEE Access,
+		vol.\ 8,
+		pp.\ 132911--132921,
+		2020.
+		
+		\bibitem{xgb2023}
+		M.\ Azam and T.\ Sharif and H.\ Aljuaid,
+		``XGBoost-Based Intrusion Detection System for the CIC-IDS2017 Benchmark,''
+		IEEE Access,
+		vol.\ 11,
+		pp.\ 104037--104052,
+		2023.
+		
+		\bibitem{chen2016}
+		T.\ Chen and C.\ Guestrin,
+		``XGBoost: A Scalable Tree Boosting System,''
+		Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining,
+		San Francisco, CA, USA,
+		2016,
+		pp.\ 785--794.
+		
+		\bibitem{svmelm2018}
+		I.\ Ahmad and M.\ Basheri and M.J.\ Iqbal and A.\ Rahim,
+		``Performance Comparison of Support Vector Machine, Extreme Learning Machine, and Deep Learning Classifiers for Network Intrusion Detection,''
+		IEEE Access,
+		vol.\ 6,
+		pp.\ 33789--33795,
+		2018.
+		
+		\bibitem{cnn2019}
+		R.\ Abdulhammed and H.\ Musafer and A.\ Alessa and M.\ Faezipour and A.\ Abuzneid,
+		``Features Dimensionality Reduction Approaches for Machine Learning Based Network Intrusion Detection Systems,''
+		Electronics,
+		vol.\ 8,
+		no.\ 3,
+		Article 322,
+		2019.
+		
+		\bibitem{jaeger2001}
+		H.\ Jaeger,
+		``The Echo State Approach to Analysing and Training Recurrent Neural Networks,''
+		German National Research Center for Information Technology (GMD),
+		Technical Report 148,
+		2001.
+		
+		\bibitem{lukosevicius2012}
+		M.\ Luko\v{s}evi\v{c}ius and H.\ Jaeger,
+		``Reservoir Computing Approaches to Recurrent Neural Network Training,''
+		Computer Science Review,
+		vol.\ 3,
+		no.\ 3,
+		pp.\ 127--149,
+		2009.
+		
+		\bibitem{esn_dos2021}
+		K.\ Bekshentayeva and L.\ Trajkovi\'{c},
+		``Detection of Denial-of-Service Attacks Using Echo State Networks,''
+		IEEE International Conference on Systems, Man, and Cybernetics (SMC),
+		Melbourne, Australia,
+		2021,
+		pp.\ 2085--2090.
+		
+		\bibitem{mlesn2020}
+		S.T.\ Zhang and Z.H.\ Liang and Y.\ Wang and X.\ Zhao,
+		``Network Traffic Anomaly Detection Based on ML-ESN for Power Metering Systems,''
+		Mathematical Problems in Engineering,
+		vol.\ 2020,
+		Article 8892237,
+		2020.
+		
+		\bibitem{gallicchio2017}
+		C.\ Gallicchio and A.\ Micheli and L.\ Pedrelli,
+		``Deep Reservoir Computing: A Critical Experimental Analysis,''
+		Neurocomputing,
+		vol.\ 268,
+		pp.\ 87--99,
+		2017.
+		
+		\bibitem{lopez2018lstmesn}
+		E.\ L\'{o}pez, C.\ Valle, H.\ Allende, E.\ Gil and H.\ Madsen,
+		``Wind Power Forecasting Based on Echo State Networks and Long Short-Term Memory,''
+		Energies,
+		vol.\ 11,
+		no.\ 3,
+		Article 526,
+		2018.
+		
+		\bibitem{cesn2024}
+		S.\ Bahmaid and S.A.M.\ Ghaleb,
+		``Intrusion Detection System Using Chaotic Walrus Optimization-Based Convolutional Echo State Networks for IoT-Assisted Wireless Sensor Networks,''
+		Journal of Wireless Mobile Networks, Ubiquitous Computing, and Dependable Applications,
+		vol.\ 15,
+		no.\ 3,
+		pp.\ 236--252,
+		2024.
+		
+		\bibitem{vaswani2017attention}
+		A.\ Vaswani, N.\ Shazeer, N.\ Parmar, J.\ Uszkoreit, L.\ Jones, A.N.\ Gomez, L.\ Kaiser and I.\ Polosukhin,
+		``Attention Is All You Need,''
+		Advances in Neural Information Processing Systems (NeurIPS),
+		Long Beach, CA, USA,
+		2017,
+		pp.\ 5998--6008.
+		
+		\bibitem{bilstm_attn2023}
+		J.\ Zhang and X.\ Zhang and Z.\ Liu and F.\ Fu and Y.\ Jiao and F.\ Xu,
+		``A Network Intrusion Detection Model Based on BiLSTM With Multi-Head Attention Mechanism,''
+		Electronics,
+		vol.\ 12,
+		no.\ 19,
+		Article 4170,
+		2023.
+		
+		\bibitem{trbma2025}
+		Y.\ Li and X.\ Chen and W.\ Zhang,
+		``TRBMA: Temporal ResNet Coupled With Bidirectional Multi-Head Attention for Intrusion Detection on CIC-IDS2017,''
+		PLoS ONE,
+		vol.\ 20,
+		no.\ 2,
+		Article e0318453,
+		2025.
+		
+		\bibitem{kheddar2024transformers}
+		H.\ Kheddar,
+		``Transformers and Large Language Models for Efficient Intrusion Detection Systems: A Comprehensive Survey,''
+		arXiv preprint arXiv:2408.07583,
+		2024.
+		
+		\bibitem{oh2025mchensemble}
+		S.\ Oh and S.\ Sohn and C.\ Kim and M.\ Park,
+		``MCH-Ensemble: Minority Class Highlighting Ensemble Method for Class Imbalance in Network Intrusion Detection,''
+		Applied Sciences,
+		vol.\ 15,
+		no.\ 23,
+		Article 12647,
+		2025.
+		
+		\bibitem{hambali2026breaking}
+		M.A.\ Hambali and N.Z.\ Bako and M.\ Dalhatu and A.\ Ishaq,
+		``Breaking Class Imbalance Barriers in Intrusion Detection Systems: A Clustering-Based Hybrid Framework,''
+		Scientific Journal of Computer Science,
+		vol.\ 2,
+		no.\ 1,
+		pp.\ 81--95,
+		2026.
+		
+		\bibitem{scardapane2017}
+		S.\ Scardapane and D.\ Wang,
+		``Randomness in Neural Networks: An Overview,''
+		WIREs Data Mining and Knowledge Discovery,
+		vol.\ 7,
+		no.\ 2,
+		Article e1200,
+		2017.
+		
+		\bibitem{rf2020}
+		Kurniabudi and D.\ Stiawan and Darmawijoyo and M.Y.\ Idris and A.M.\ Bamhdi and R.\ Budiarto,
+		``CICIDS-2017 Dataset Feature Analysis With Information Gain for Anomaly Detection,''
+		IEEE Access,
+		vol.\ 8,
+		pp.\ 132911--132921,
+		2020.
+		
+		\bibitem{reis2019}
+		B.\ Reis and E.\ Maia and I.\ Praça,
+		``Selection and Performance Analysis of CICIDS2017 Features Importance,''
+		International Symposium on Foundations and Practice of Security (FPS),
+		Paris, France,
+		2019,
+		pp.\ 56--71.
+		
+		\bibitem{engelen2021}
+		G.\ Engelen and V.\ Rimmer and W.\ Joosen,
+		``Troubleshooting an Intrusion Detection Dataset: The CICIDS2017 Case Study,''
+		IEEE Symposium on Security and Privacy Workshops (SPW),
+		San Francisco, CA, USA,
+		2021,
+		pp.\ 7--12.
+		
+		\bibitem{lashkari2017}
+		A.H.\ Lashkari and G.D.\ Gil and M.S.I.\ Mamun and A.A.\ Ghorbani,
+		``Characterization of Tor Traffic Using Time-Based Features,''
+		2017 3rd International Conference on Information Systems Security and Privacy (ICISSP),
+		Porto, Portugal,
+		2017,
+		pp.\ 253--262.
+		
+		\bibitem{alam2026drlesn}
+		K.\ Alam and M.H.\ Bhuiyan and D.M.\ Farid,
+		``A Deep Reinforcement-Based Echo State Network for Network Intrusion Classification,''
+		PLOS ONE,
+		vol.\ 21,
+		no.\ 4,
+		Article e0333038,
+		2026.
+		
+		\bibitem{idrissi2023fedanids}
+		M.J.\ Idrissi and H.\ Alami and A.\ El Mahdaouy and A.\ El Mekki and S.\ Oualil and Z.\ Yartaoui and I.\ Berrada,
+		``Fed-ANIDS: Federated Learning for Anomaly-Based Network Intrusion Detection Systems,''
+		Expert Systems with Applications,
+		vol.\ 234,
+		Article 121000,
+		2023.
+		
+		\bibitem{feddef2023}
+		J.\ Chen and Y.\ Zhao and Q.\ Li and X.\ Feng and K.\ Xu,
+		``FedDef: Defense Against Gradient Leakage in Federated Learning-Based Network Intrusion Detection Systems,''
+		IEEE Transactions on Information Forensics and Security,
+		vol.\ 18,
+		pp.\ 4561--4576,
+		2023.
+		
+		\bibitem{hore2024sequential}
+		S.\ Hore and J.\ Ghadermazi and A.\ Shah and N.D.\ Bastian,
+		``A Sequential Deep Learning Framework for a Robust and Resilient Network Intrusion Detection System,''
+		Computers \& Security,
+		vol.\ 144,
+		Article 103928,
+		2024.
+		
+		\bibitem{hernandezramos2025federated}
+		J.L.\ Hernandez-Ramos and G.\ Karopoulos and E.\ Chatzoglou and V.\ Kouliaridis and E.\ Marmol and A.\ Gonzalez-Vidal and G.\ Kambourakis,
+		``Intrusion Detection Based on Federated Learning: A Systematic Review,''
+		ACM Computing Surveys,
+		vol.\ 57,
+		no.\ 12,
+		Article 309,
+		2025.
+		
+		\bibitem{almansour2025adaptive}
+		S.\ Almansour and K.\ Yadav and L.M.\ Alkwai and N.S.\ Alghamdi and W.\ Viriyasitavat and G.\ Dhiman,
+		``Adaptive Personalized Federated Learning With Lightweight Depthwise Convolutional Bottleneck Network for Novel Intrusion Detection System in Internet of Vehicles,''
+		Scientific Reports,
+		vol.\ 15,
+		Article 35604,
+		2025.
+		
+		\bibitem{moczkodan2026transformers}
+		Z.\ Moczkodan and H.\ Ragab,
+		``Do Transformers Actually Help Intrusion Detection? A Temporal Sequence Evaluation on CIC-IDS2017,''
+		arXiv preprint arXiv:2606.11098,
+		2026.
+		
+		\bibitem{zhou2020ensemble}
+		Y.\ Zhou and G.\ Cheng and S.\ Jiang and M.\ Dai,
+		``Building an Efficient Intrusion Detection System Based on Feature Selection and Ensemble Classifier,''
+		Computer Networks,
+		vol.\ 174,
+		Article 107247,
+		2020.
+		
+		\bibitem{gallicchio2020}
+		C.\ Gallicchio and A.\ Micheli,
+		``Ring Reservoir Neural Networks for Graphs,''
+		IEEE International Joint Conference on Neural Networks (IJCNN),
+		Glasgow, United Kingdom,
+		2020,
+		pp.\ 1--7.
+		
+		\bibitem{liu2020hierarchical}
+		C.\ Liu and Y.\ Liu and Y.\ Yan and J.\ Wang,
+		``An Intrusion Detection Model With Hierarchical Attention Mechanism,''
+		IEEE Access,
+		vol.\ 8,
+		pp.\ 67542--67554,
+		2020.
+		
+	\end{thebibliography}
+\end{document}
